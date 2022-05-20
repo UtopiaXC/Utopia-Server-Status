@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Utopia Server Status</string>
+    <string name="title_home">主页</string>
+    <string name="title_servers">服务器列表</string>
+    <string name="title_about">关于</string>
+</resources>
