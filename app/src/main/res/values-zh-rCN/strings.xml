@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    app信息-->
     <string name="app_name">Utopia Server Status</string>
     <string name="title_home">主页</string>
     <string name="title_servers">服务器列表</string>
     <string name="title_about">关于</string>
+
+    <!--    显示字符串-->
+    <string name="welcome">欢迎使用USS</string>
+    <string name="address_title">Server Status地址</string>
+    <string name="address_set_alert">您需要填写您的Server Status地址并点击确认</string>
+    <string name="address_help">您需要输入部署在您服务器上的开源项目ServerStatus-Hotaru的前端访问地址。\n需要注意的是，您必须开启SSL，即您的地址必须以”https://“开始。</string>
+    <string name="address_format_wrong">您输入的地址格式有误</string>
+    <string name="address_invalid">地址无效，请检查您的地址是否为您的ServerStatus-Hotaru地址，且能够正常访问其json接口。</string>
+
+    <!--    通用标题-->
+    <string name="confirm">确认</string>
+    <string name="sorry">抱歉</string>
+    <string name="cancel">取消</string>
+    <string name="succeed">成功</string>
+    <string name="error">错误</string>
+    <string name="alert">提醒</string>
+    <string name="warning">警告</string>
+    <string name="help">帮助</string>
+    <string name="tips">提示</string>
+    <string name="wait">请稍候</string>
 </resources>

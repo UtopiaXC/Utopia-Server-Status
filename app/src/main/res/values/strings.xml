@@ -1,6 +1,29 @@
 <resources>
+    <!--    app massage-->
     <string name="app_name">Utopia Server Status</string>
     <string name="title_home">Home</string>
     <string name="title_servers">Servers</string>
     <string name="title_about">About</string>
+
+    <!--    display strings-->
+    <string name="welcome">Welcome to USS</string>
+    <string name="rights" translatable="false">Copyright © 2022 UtopiaXC All Rights Reserved.</string>
+    <string name="address_title">Server Status地址</string>
+    <string name="address_set_alert">You should fill the address and tap confirm</string>
+    <string name="address_example" translatable="false">https://example.com/</string>
+    <string name="address_help">You need to enter the front-end access address of the open source project ServerStatus-Hotaru deployed on your server.\n Note that you must have SSL enabled, i.e. your address must start with "https://".</string>
+    <string name="address_format_wrong">The format of your address is wrong.</string>
+    <string name="address_invalid">Address invalid, Please confirm if your address is your ServerStatus-Hotaru address.</string>
+
+    <!--    titles-->
+    <string name="confirm">Confirm</string>
+    <string name="sorry">Sorry</string>
+    <string name="cancel">Cancel</string>
+    <string name="succeed">Succeed</string>
+    <string name="warning">Warning</string>
+    <string name="error">Error</string>
+    <string name="alert">Alert</string>
+    <string name="help">Help</string>
+    <string name="tips">Tips</string>
+    <string name="wait">Wait</string>
 </resources>
