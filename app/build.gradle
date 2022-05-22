@@ -75,4 +75,7 @@ dependencies {
     implementation 'com.mikepenz:pixeden-7-stroke-typeface:1.2.0.3@aar'
     //JSON解析
     implementation 'com.alibaba:fastjson:1.2.79'
+
+    //列表适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7'
 }

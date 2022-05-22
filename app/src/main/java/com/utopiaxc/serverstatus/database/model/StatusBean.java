@@ -8,58 +8,155 @@ import androidx.room.PrimaryKey;
 import java.util.UUID;
 
 /**
+ * 服务器状态数据模型
+ *
  * @author UtopiaXC
- * @date 2022-05-22 15:50
+ * @since 2022-05-22 22:57:16
  */
 @Entity(tableName = "status")
 public class StatusBean {
+    /**
+     * 状态ID
+     */
     @PrimaryKey
     @NonNull
     private UUID id = UUID.randomUUID();
+
+    /**
+     * 服务器ID
+     */
     @ColumnInfo(name = "server_id")
     private UUID serverId;
+
+    /**
+     * 服务器类型
+     */
     @ColumnInfo(name = "server_type")
     private String serverType;
+
+    /**
+     * 服务器位置
+     */
     @ColumnInfo(name = "server_location")
     private String serverLocation;
+
+    /**
+     * 服务器地区
+     */
     @ColumnInfo(name = "server_region")
     private String serverRegion;
+
+    /**
+     * IPV4网络状态
+     */
     @ColumnInfo(name = "server_ipv4_status")
     private String serverIpv4Status;
+
+    /**
+     * IPV6网络状态
+     */
     @ColumnInfo(name = "server_ipv6_status")
     private String serverIpv6Status;
+
+    /**
+     * 服务器运行时间
+     */
     @ColumnInfo(name = "server_uptime")
     private String serverUptime;
+
+    /**
+     * 服务器负载
+     */
     @ColumnInfo(name = "server_load")
     private String serverLoad;
+
+    /**
+     * 服务器实时下载网速
+     */
     @ColumnInfo(name = "server_network_realtime_download_speed")
     private String serverNetworkRealtimeDownloadSpeed;
+
+    /**
+     * 服务器实时上传网速
+     */
     @ColumnInfo(name = "server_network_realtime_upload_speed")
     private String serverNetworkRealtimeUploadSpeed;
+
+    /**
+     * 服务器下载流量
+     */
     @ColumnInfo(name = "server_network_in")
     private String serverNetworkIn;
+
+    /**
+     * 服务器上传流量
+     */
     @ColumnInfo(name = "server_network_out")
     private String serverNetworkOut;
+
+    /**
+     * 服务器CPU负载
+     */
     @ColumnInfo(name = "server_cpu_percent")
     private String serverCpuPercent;
+
+    /**
+     * 服务器内存总量
+     */
     @ColumnInfo(name = "server_memory_total")
     private String serverMemoryTotal;
+
+    /**
+     * 服务器内存占用
+     */
     @ColumnInfo(name = "server_memory_used")
     private String serverMemoryUsed;
+
+    /**
+     * 服务器内存负载
+     */
     @ColumnInfo(name = "server_memory_percent")
     private String serverMemoryPercent;
+
+    /**
+     * 服务器交换总量
+     */
     @ColumnInfo(name = "server_swap_total")
     private String serverSwapTotal;
+
+    /**
+     * 服务器交换占用
+     */
     @ColumnInfo(name = "server_swap_used")
     private String serverSwapUsed;
+
+    /**
+     * 服务器交换负载
+     */
     @ColumnInfo(name = "server_swap_percent")
     private String serverSwapPercent;
+
+    /**
+     * 服务器硬盘总量
+     */
     @ColumnInfo(name = "server_disk_total")
     private String serverDiskTotal;
+
+    /**
+     * 服务器硬盘占用
+     */
     @ColumnInfo(name = "server_disk_used")
     private String serverDiskUsed;
+
+    /**
+     * 服务器硬盘负载
+     */
     @ColumnInfo(name = "server_disk_percent")
     private String serverDiskPercent;
+
+    /**
+     * 服务器状态更新时间
+     */
     @ColumnInfo(name = "server_timestamp")
     private String serverTimestamp;
 

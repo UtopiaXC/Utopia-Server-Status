@@ -9,16 +9,26 @@ import androidx.room.PrimaryKey;
 import java.util.UUID;
 
 /**
+ * 服务器数据模型
+ *
  * @author UtopiaXC
- * @date 2022-05-22 14:53
+ * @since 2022-05-22 23:03:00
  */
 @Entity(tableName = "servers")
 public class ServerBean {
+    /**
+     * 服务器ID
+     */
     @PrimaryKey
     @NonNull
     private UUID id = UUID.randomUUID();
+
+    /**
+     * 服务器名
+     */
     @ColumnInfo(name = "server_name")
     private String serverName;
+
 
     @NonNull
     public UUID getId() {

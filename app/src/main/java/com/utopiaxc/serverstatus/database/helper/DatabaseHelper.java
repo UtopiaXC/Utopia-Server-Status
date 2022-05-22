@@ -9,8 +9,10 @@ import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 
 /**
+ * 数据库持久层
+ *
  * @author UtopiaXC
- * @date 2022-05-22 12:00
+ * @since 2022-05-22 23:08:08
  */
 @Database(entities = {ServerBean.class, StatusBean.class}, version = 1, exportSchema = false)
 public abstract class DatabaseHelper extends RoomDatabase {
