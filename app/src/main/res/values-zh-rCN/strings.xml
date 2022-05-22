@@ -5,6 +5,7 @@
     <string name="title_home">主页</string>
     <string name="title_servers">服务器列表</string>
     <string name="title_about">关于</string>
+    <string name="title_activity_licences">开源许可证</string>
 
     <!--    显示字符串-->
     <string name="welcome">欢迎使用USS</string>
@@ -13,6 +14,8 @@
     <string name="address_help">您需要输入部署在您服务器上的开源项目ServerStatus-Hotaru的前端访问地址。\n需要注意的是，您必须开启SSL，即您的地址必须以”https://“开始。</string>
     <string name="address_format_wrong">您输入的地址格式有误</string>
     <string name="address_invalid">地址无效，请检查您的地址是否为您的ServerStatus-Hotaru地址，且能够正常访问其json接口。</string>
+    <string name="background_notification">USS正在后台运行</string>
+    <string name="changelog_title">更新日志（请等待从GitHub加载）</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>
@@ -25,4 +28,40 @@
     <string name="help">帮助</string>
     <string name="tips">提示</string>
     <string name="wait">请稍候</string>
+    <string name="settings">设置</string>
+
+
+    <!--    about-->
+    <string name="version">版本</string>
+    <string name="changelog">更新日志</string>
+    <string name="licenses">开源许可证</string>
+    <string name="author">作者</string>
+    <string name="follow_on_github">在GitHub上访问</string>
+    <string name="follow_on_gitlab">在GitLab上访问</string>
+    <string name="feedback_by_email">通过邮件反馈</string>
+
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

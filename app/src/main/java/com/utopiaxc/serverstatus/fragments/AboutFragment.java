@@ -1,33 +1,114 @@
 package com.utopiaxc.serverstatus.fragments;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import com.danielstone.materialaboutlibrary.ConvenienceBuilder;
+import com.danielstone.materialaboutlibrary.MaterialAboutFragment;
+import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem;
+import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem;
+import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
+import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.utopiaxc.serverstatus.R;
+import com.utopiaxc.serverstatus.activities.LicencesActivity;
+import com.utopiaxc.serverstatus.activities.SettingsActivity;
 
-import com.utopiaxc.serverstatus.databinding.FragmentAboutBinding;
+public class AboutFragment extends MaterialAboutFragment {
 
-public class AboutFragment extends Fragment {
+    @Override
+    protected MaterialAboutList getMaterialAboutList(final Context activityContext) {
+        MaterialAboutCard.Builder appCardBuilder = new MaterialAboutCard.Builder();
 
-    private FragmentAboutBinding binding;
+        appCardBuilder.addItem(new MaterialAboutTitleItem.Builder()
+                .text(R.string.app_name)
+                .desc(R.string.rights)
+                .icon(R.mipmap.ic_launcher)
+                .build());
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+        appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(activityContext,
+                new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_code_array)
+                        .sizeDp(18),
+                requireActivity().getString(R.string.version),
+                true));
+
+        appCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.changelog)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_content_paste)
+                        .sizeDp(18))
+                .setOnClickAction(ConvenienceBuilder.createWebViewDialogOnClickAction(activityContext, requireActivity().getString(R.string.changelog_title), "https://github.com/UtopiaXC/ChestOfDrawers/releases", true, false))
+                .build());
+
+        appCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.licenses)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_book)
+                        .sizeDp(18))
+                .setOnClickAction(() -> {
+                    Intent intent = new Intent(activityContext, LicencesActivity.class);
+                    startActivity(intent);
+                })
+                .build());
+
+        MaterialAboutCard.Builder authorCardBuilder = new MaterialAboutCard.Builder();
+        authorCardBuilder.title(R.string.author);
+
+        authorCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.author_name)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_account)
+                        .sizeDp(18))
+                .build());
+
+        authorCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.follow_on_github)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_github_circle)
+                        .sizeDp(18))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse("https://github.com/UtopiaXC/Utopia-Server-Status")))
+                .build());
+
+        authorCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.follow_on_gitlab)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_gitlab)
+                        .sizeDp(18))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse("https://git.utopiaxc.cn/UtopiaXC/utopia-server-status")))
+                .build());
+
+        authorCardBuilder.addItem(ConvenienceBuilder.createEmailItem(activityContext,
+                new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_email)
+                        .sizeDp(18),
+                requireActivity().getString(R.string.feedback_by_email),
+                true,
+                "utopiaxc@utopiaxc.com",
+                "Feedback Of " + requireActivity().getString(R.string.app_name)));
 
 
-        binding = FragmentAboutBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        return root;
+        MaterialAboutCard.Builder convenienceCardBuilder = new MaterialAboutCard.Builder();
+        convenienceCardBuilder.title(R.string.settings);
+        convenienceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.settings)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_cellphone_settings_variant)
+                        .sizeDp(18))
+                .setOnClickAction(() -> {
+                    Intent intent = new Intent(requireActivity(), SettingsActivity.class);
+                    startActivity(intent);
+                })
+                .build());
+
+
+        return new MaterialAboutList(appCardBuilder.build(), authorCardBuilder.build(), convenienceCardBuilder.build());
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }
