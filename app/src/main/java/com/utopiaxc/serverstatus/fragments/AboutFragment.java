@@ -15,6 +15,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.activities.LicencesActivity;
 import com.utopiaxc.serverstatus.activities.SettingsActivity;
+import com.utopiaxc.serverstatus.utils.Constants;
 
 public class AboutFragment extends MaterialAboutFragment {
 
@@ -40,7 +41,7 @@ public class AboutFragment extends MaterialAboutFragment {
                 .icon(new IconicsDrawable(activityContext)
                         .icon(CommunityMaterial.Icon.cmd_content_paste)
                         .sizeDp(18))
-                .setOnClickAction(ConvenienceBuilder.createWebViewDialogOnClickAction(activityContext, requireActivity().getString(R.string.changelog_title), "https://github.com/UtopiaXC/Utopia-Server-Status/releases", true, false))
+                .setOnClickAction(ConvenienceBuilder.createWebViewDialogOnClickAction(activityContext, requireActivity().getString(R.string.changelog_title), Constants.GITHUB_RELEASE_URL, true, false))
                 .build());
 
         appCardBuilder.addItem(new MaterialAboutActionItem.Builder()
@@ -69,7 +70,7 @@ public class AboutFragment extends MaterialAboutFragment {
                 .icon(new IconicsDrawable(activityContext)
                         .icon(CommunityMaterial.Icon.cmd_github_circle)
                         .sizeDp(18))
-                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse("https://github.com/UtopiaXC/Utopia-Server-Status")))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse(Constants.GITHUB_URL)))
                 .build());
 
         authorCardBuilder.addItem(new MaterialAboutActionItem.Builder()
@@ -77,7 +78,7 @@ public class AboutFragment extends MaterialAboutFragment {
                 .icon(new IconicsDrawable(activityContext)
                         .icon(CommunityMaterial.Icon.cmd_gitlab)
                         .sizeDp(18))
-                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse("https://git.utopiaxc.cn/UtopiaXC/utopia-server-status")))
+                .setOnClickAction(ConvenienceBuilder.createWebsiteOnClickAction(activityContext, Uri.parse(Constants.GITLAB_URL)))
                 .build());
 
         authorCardBuilder.addItem(ConvenienceBuilder.createEmailItem(activityContext,
@@ -86,8 +87,8 @@ public class AboutFragment extends MaterialAboutFragment {
                         .sizeDp(18),
                 requireActivity().getString(R.string.feedback_by_email),
                 true,
-                "utopiaxc@utopiaxc.com",
-                "Feedback Of " + requireActivity().getString(R.string.app_name)));
+                Constants.AUTHOR_EMAIL,
+                requireActivity().getString(R.string.feedback_subject)));
 
 
         MaterialAboutCard.Builder convenienceCardBuilder = new MaterialAboutCard.Builder();
