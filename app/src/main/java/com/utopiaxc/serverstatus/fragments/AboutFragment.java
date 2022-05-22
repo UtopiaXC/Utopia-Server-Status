@@ -40,7 +40,7 @@ public class AboutFragment extends MaterialAboutFragment {
                 .icon(new IconicsDrawable(activityContext)
                         .icon(CommunityMaterial.Icon.cmd_content_paste)
                         .sizeDp(18))
-                .setOnClickAction(ConvenienceBuilder.createWebViewDialogOnClickAction(activityContext, requireActivity().getString(R.string.changelog_title), "https://github.com/UtopiaXC/ChestOfDrawers/releases", true, false))
+                .setOnClickAction(ConvenienceBuilder.createWebViewDialogOnClickAction(activityContext, requireActivity().getString(R.string.changelog_title), "https://github.com/UtopiaXC/Utopia-Server-Status/releases", true, false))
                 .build());
 
         appCardBuilder.addItem(new MaterialAboutActionItem.Builder()
