@@ -16,7 +16,6 @@
     <string name="address_format_wrong">The format of your address is wrong.</string>
     <string name="address_invalid">Address invalid, Please confirm if your address is your ServerStatus-Hotaru address.</string>
     <string name="background_notification">USS is running in background</string>
-    <string name="changelog_title">Change Log(Please wait for GitHub)</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>
@@ -37,34 +36,35 @@
     <string name="changelog">Change Log</string>
     <string name="licenses">License</string>
     <string name="author">Author</string>
-    <string name="author_name" translatable="false">UtopiaXC</string>
     <string name="follow_on_github">Follow on GitHub</string>
     <string name="follow_on_gitlab">Follow on GitLab</string>
     <string name="feedback_by_email">Feedback by Email</string>
-
-    <string name="title_activity_settings">SettingsActivity</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="changelog_title">Change Log(Please wait for GitHub)</string>
     <string name="feedback_subject">Feedback For Utopia Server Status</string>
+
+    <!--settings-->
+    <string name="title_activity_settings">Settings</string>
+    <string name="theme">Theme</string>
+    <string name="web_address">Web Address</string>
+    <string name="background_service">Enable Background Service</string>
+    <string name="background_service_title">Background Service</string>
+    <string name="system">System</string>
+    <string name="enable_server_list_as_start_page">Use Server List as Start Page</string>
+    <string name="update_status_interval">Update Status Interval</string>
+    <string name="archive_time">Archive keeping time</string>
+    <string name="start_with_boot">Start with system boot</string>
+    <string name="notification">Notification</string>
+    <string name="notification_switch">Allow Notification</string>
+    <string name="system_load">System Load</string>
+    <string name="system_load_description">Alert when system overload.</string>
+    <string name="system_load_threshold">System Load Threshold</string>
+    <string name="cpu_load">CPU Load</string>
+    <string name="cpu_load_description">Alert when CPU overload.</string>
+    <string name="cpu_load_threshold">CPU Load Threshold</string>
+    <string name="memory_load">Memory Load</string>
+    <string name="memory_load_description">Alert when memory overload.</string>
+    <string name="memory_load_threshold">Memory Load Threshold</string>
+    <string name="disk_load">Disk Load</string>
+    <string name="disk_load_description">Alert when disk overload.</string>
+    <string name="disk_load_threshold">Disk Load Threshold</string>
 </resources>

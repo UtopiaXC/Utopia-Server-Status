@@ -7,12 +7,16 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 
+import androidx.preference.PreferenceManager;
+
 import com.utopiaxc.serverstatus.MainActivity;
 import com.utopiaxc.serverstatus.R;
+import com.utopiaxc.serverstatus.utils.UpdateStatus;
 
 public class ServerStatusUpdateService extends Service {
     private ServerStatusUpdateBinder binder;
@@ -21,6 +25,7 @@ public class ServerStatusUpdateService extends Service {
     private final String NOTIFICATION_CHANNEL_ID = "USS_BACKGROUND_NOTIFICATION";
     private final String NOTIFICATION_CHANNEL_NAME = "USS_BACKGROUND_NOTIFICATION";
     private final int NOTIFICATION_ID = 154651133;
+    private Thread updateThread;
 
     public ServerStatusUpdateService() {
     }
@@ -28,7 +33,6 @@ public class ServerStatusUpdateService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("SERVICE START");
         binder = new ServerStatusUpdateBinder();
         context = this;
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -37,6 +41,11 @@ public class ServerStatusUpdateService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
         startForeground(NOTIFICATION_ID, getNotification());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean("backgroundService", true)) {
+            updateThread = new Thread(new UpdateStatus(context));
+            updateThread.start();
+        }
     }
 
     private Notification getNotification() {
@@ -70,6 +79,7 @@ public class ServerStatusUpdateService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        updateThread.interrupt();
         notificationManager.cancel(NOTIFICATION_ID);
     }
 }

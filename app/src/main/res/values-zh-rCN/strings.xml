@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    app信息-->
+    <!--    信息-->
     <string name="app_name">Utopia Server Status</string>
     <string name="title_home">主页</string>
     <string name="title_servers">服务器列表</string>
@@ -15,7 +15,6 @@
     <string name="address_format_wrong">您输入的地址格式有误</string>
     <string name="address_invalid">地址无效，请检查您的地址是否为您的ServerStatus-Hotaru地址，且能够正常访问其json接口。</string>
     <string name="background_notification">USS正在后台运行</string>
-    <string name="changelog_title">更新日志（请等待从GitHub加载）</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>
@@ -31,7 +30,7 @@
     <string name="settings">设置</string>
 
 
-    <!--    about-->
+    <!--    关于-->
     <string name="version">版本</string>
     <string name="changelog">更新日志</string>
     <string name="licenses">开源许可证</string>
@@ -39,30 +38,33 @@
     <string name="follow_on_github">在GitHub上访问</string>
     <string name="follow_on_gitlab">在GitLab上访问</string>
     <string name="feedback_by_email">通过邮件反馈</string>
-
-    <string name="title_activity_settings">SettingsActivity</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="changelog_title">更新日志（请等待从GitHub加载）</string>
     <string name="feedback_subject">反馈：Utopia Server Status</string>
+
+    <!--    设置-->
+    <string name="title_activity_settings">设置</string>
+    <string name="theme">主题</string>
+    <string name="web_address">接口地址</string>
+    <string name="background_service">允许后台服务</string>
+    <string name="background_service_title">后台服务</string>
+    <string name="system">系统</string>
+    <string name="enable_server_list_as_start_page">将服务器列表页设为首页</string>
+    <string name="update_status_interval">检测间隔</string>
+    <string name="archive_time">记录存档保存时间</string>
+    <string name="start_with_boot">服务开机自启</string>
+    <string name="notification">通知</string>
+    <string name="notification_switch">允许通知</string>
+    <string name="system_load">系统负载</string>
+    <string name="system_load_description">当系统负载超过阈值时通知</string>
+    <string name="system_load_threshold">系统负载阈值</string>
+    <string name="cpu_load">CPU负载</string>
+    <string name="cpu_load_description">当CPU负载超过阈值时通知</string>
+    <string name="cpu_load_threshold">CPU负载阈值</string>
+    <string name="memory_load">内存负载</string>
+    <string name="memory_load_description">当内存负载超过阈值时通知</string>
+    <string name="memory_load_threshold">内存负载阈值</string>
+    <string name="disk_load">硬盘负载</string>
+    <string name="disk_load_description">当硬盘负载超过阈值时通知</string>
+    <string name="disk_load_threshold">硬盘负载阈值</string>
+
 </resources>

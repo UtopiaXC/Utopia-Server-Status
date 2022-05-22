@@ -59,7 +59,7 @@ public class AboutFragment extends MaterialAboutFragment {
         authorCardBuilder.title(R.string.author);
 
         authorCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text(R.string.author_name)
+                .text(Constants.AUTHOR_NAME)
                 .icon(new IconicsDrawable(activityContext)
                         .icon(CommunityMaterial.Icon.cmd_account)
                         .sizeDp(18))

@@ -1,41 +1,142 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/theme">
+        <ListPreference
+            app:defaultValue="auto"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="theme"
+            app:title="@string/theme"
+            app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="enableServerListAsStartPage"
+            app:title="@string/enable_server_list_as_start_page" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory app:title="@string/system">
         <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
+            android:selectAllOnFocus="true"
+            app:key="address"
+            app:title="@string/web_address"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:defaultValue="5000"
+            app:entries="@array/interval_entries"
+            app:entryValues="@array/interval_values"
+            app:key="interval"
+            app:title="@string/update_status_interval"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="5"
+            app:entries="@array/archive_time_entries"
+            app:entryValues="@array/archive_time_values"
+            app:key="archive_time"
+            app:title="@string/archive_time"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/background_service_title">
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+            android:defaultValue="true"
+            app:key="backgroundService"
+            app:title="@string/background_service" />
 
         <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+            android:defaultValue="true"
+            app:dependency="backgroundService"
+            app:key="start_with_boot"
+            app:title="@string/start_with_boot" />
 
     </PreferenceCategory>
-    <EditTextPreference
-        android:key="address"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="Edit text preference" />
+
+    <PreferenceCategory app:title="@string/notification">
+
+        <SwitchPreferenceCompat
+            app:dependency="backgroundService"
+            app:key="alert_notification"
+            app:title="@string/notification_switch" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:dependency="alert_notification"
+            app:key="system_load"
+            app:summaryOff="@string/system_load_description"
+            app:summaryOn="@string/system_load_description"
+            app:title="@string/system_load" />
+
+
+        <ListPreference
+            app:defaultValue="0.75"
+            app:dependency="system_load"
+            app:entries="@array/percent_entries"
+            app:entryValues="@array/percent_values"
+            app:key="system_load_threshold"
+            app:title="@string/system_load_threshold"
+            app:useSimpleSummaryProvider="true" />
+
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:dependency="alert_notification"
+            app:key="cpu_alert"
+            app:summaryOff="@string/cpu_load_description"
+            app:summaryOn="@string/cpu_load_description"
+            app:title="@string/cpu_load" />
+
+        <ListPreference
+            app:defaultValue="0.75"
+            app:dependency="cpu_alert"
+            app:entries="@array/percent_entries"
+            app:entryValues="@array/percent_values"
+            app:key="cpu_alert_threshold"
+            app:title="@string/cpu_load_threshold"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:dependency="alert_notification"
+            app:key="memory_alert"
+            app:summaryOff="@string/memory_load_description"
+            app:summaryOn="@string/memory_load_description"
+            app:title="@string/memory_load" />
+
+        <ListPreference
+            app:defaultValue="0.75"
+            app:dependency="memory_alert"
+            app:entries="@array/percent_entries"
+            app:entryValues="@array/percent_values"
+            app:key="memory_alert_threshold"
+            app:title="@string/memory_load_threshold"
+            app:useSimpleSummaryProvider="true" />
+
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:dependency="alert_notification"
+            app:key="disk_alert"
+            app:summaryOff="@string/disk_load_description"
+            app:summaryOn="@string/disk_load_description"
+            app:title="@string/disk_load" />
+
+        <ListPreference
+            app:defaultValue="0.75"
+            app:dependency="disk_alert"
+            app:entries="@array/percent_entries"
+            app:entryValues="@array/percent_values"
+            app:key="disk_alert_threshold"
+            app:title="@string/disk_load_threshold"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

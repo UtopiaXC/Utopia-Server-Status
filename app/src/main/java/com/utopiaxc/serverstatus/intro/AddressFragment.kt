@@ -18,13 +18,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import com.utopiaxc.serverstatus.R
 import com.utopiaxc.serverstatus.databinding.FragmentAddressBinding
-import com.utopiaxc.serverstatus.services.ServerStatusUpdateService
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.util.regex.Matcher
@@ -40,6 +38,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
     private lateinit var binding: FragmentAddressBinding
     private lateinit var address: String
     private lateinit var jsonContent: JSONObject
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,8 +88,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                 editor.remove("address")
                 editor.remove("first_start")
                 editor.apply()
-                val service = Intent(context, ServerStatusUpdateService::class.java)
-                context.stopService(service)
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -118,11 +115,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                     .ignoreContentType(true)
             try {
                 val document = connect.get()
-                jsonContent = JSON.parseObject(document.body().text())
-                val servers = JSON.parseArray(jsonContent["servers"].toString())
-                for (server in servers) {
-                    println(server)
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 addressIsSet = false
@@ -161,8 +153,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                         null
                     )
 
-                    val broadcast = Intent("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED")
-                    context.sendBroadcast(broadcast)
 
                     binding.buttonSubmitAddress.setText(R.string.succeed)
                     binding.buttonSubmitAddress.isEnabled = false
@@ -172,8 +162,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                     editor.putString("address", address)
                     editor.putBoolean("first_start", false)
                     editor.apply()
-                    val service = Intent(context, ServerStatusUpdateService::class.java)
-                    context.startService(service)
                 } else {
                     binding.buttonSubmitAddress.setText(R.string.confirm)
                     binding.buttonSubmitAddress.isEnabled = true
