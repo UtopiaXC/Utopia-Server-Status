@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.utopiaxc.serverstatus" >
+    package="com.utopiaxc.serverstatus">
 
     <permission
         android:name="com.utopiaxc.receiver.receivebroadcast"
@@ -21,14 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ServerStatus"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
             android:name=".activities.LicencesActivity"
-            android:exported="false" />
-
-        <service
-            android:name=".services.ServerStatusUpdateService"
-            android:enabled="true"
             android:exported="false" />
 
         <activity
@@ -40,13 +35,27 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".services.ServerStatusUpdateService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receivers.BootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
