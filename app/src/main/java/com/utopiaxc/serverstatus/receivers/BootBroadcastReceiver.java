@@ -1,5 +1,6 @@
 package com.utopiaxc.serverstatus.receivers;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,16 @@ import com.utopiaxc.serverstatus.services.ServerStatusUpdateService;
  * @since 2022-05-23 12:06
  */
 public class BootBroadcastReceiver extends BroadcastReceiver {
+    /**
+     * 开机广播监听
+     * <p>接收到开机广播后执行
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 12:11:11
+     * @param context 上下文
+     * @param intent 入参
+     */
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
