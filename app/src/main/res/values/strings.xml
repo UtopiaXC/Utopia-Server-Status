@@ -9,13 +9,14 @@
     <!--    display strings-->
     <string name="welcome">Welcome to USS</string>
     <string name="rights" translatable="false">Copyright © 2022 UtopiaXC All Rights Reserved.</string>
-    <string name="address_title">Server Status地址</string>
+    <string name="address_title">Server Status Address</string>
     <string name="address_set_alert">You should fill the address and tap confirm</string>
     <string name="address_example" translatable="false">https://example.com/</string>
     <string name="address_help">You need to enter the front-end access address of the open source project ServerStatus-Hotaru deployed on your server.\n Note that you must have SSL enabled, i.e. your address must start with "https://".</string>
     <string name="address_format_wrong">The format of your address is wrong.</string>
     <string name="address_invalid">Address invalid, Please confirm if your address is your ServerStatus-Hotaru address.</string>
     <string name="background_notification">USS is running in background</string>
+    <string name="background_service_error">Background Server Error and Shutdown</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>

@@ -5,12 +5,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -27,7 +30,7 @@ import com.utopiaxc.serverstatus.utils.UpdateStatus;
  */
 public class ServerStatusUpdateService extends Service {
     private ServerStatusUpdateBinder binder;
-    private Context context;
+    private Context mContext;
     private NotificationManager notificationManager;
     private final String NOTIFICATION_CHANNEL_ID = "USS_BACKGROUND_NOTIFICATION";
     private final int NOTIFICATION_ID = 154651133;
@@ -45,7 +48,7 @@ public class ServerStatusUpdateService extends Service {
         super.onCreate();
         //创建进程间通信
         binder = new ServerStatusUpdateBinder();
-        context = this;
+        mContext = this;
 
         //后台常驻通知
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -57,11 +60,17 @@ public class ServerStatusUpdateService extends Service {
         startForeground(NOTIFICATION_ID, getNotification());
 
         //当允许后台服务时启动更新线程
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (sharedPreferences.getBoolean("backgroundService", true)) {
-            updateThread = new Thread(new UpdateStatus(context));
+            updateThread = new Thread(new UpdateStatus(mContext));
             updateThread.start();
         }
+
+        //注册后台服务进程异常广播
+        ServerUpdateErrorReceiver serverUpdateErrorReceiver=new ServerUpdateErrorReceiver();
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATE_ERROR");
+        mContext.registerReceiver(serverUpdateErrorReceiver,intentFilter,"com.utopiaxc.receiver.receivebroadcast",null);
     }
 
     /**
@@ -74,16 +83,16 @@ public class ServerStatusUpdateService extends Service {
     private Notification getNotification() {
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(context.getString(R.string.app_name))
+                .setContentTitle(mContext.getString(R.string.app_name))
                 .setOngoing(true)
-                .setContentText(context.getString(R.string.background_notification));
+                .setContentText(mContext.getString(R.string.background_notification));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         }
         builder.setSound(null);
         builder.setVibrate(null);
         Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         builder.setContentIntent(pendingIntent);
         return builder.build();
     }
@@ -136,5 +145,30 @@ public class ServerStatusUpdateService extends Service {
         updateThread.interrupt();
         //回收后台通知
         notificationManager.cancel(NOTIFICATION_ID);
+    }
+
+    /**
+     * 后台进程异常终止处理
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 10:24:22
+     */
+    class ServerUpdateErrorReceiver extends BroadcastReceiver {
+
+        /**
+         * 后台进程异常广播处理
+         * <p>终止后台服务
+         *
+         * @author UtopiaXC
+         * @since 2022-05-23 10:27:15
+         * @param context 上下文
+         * @param intent 参数
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, R.string.background_service_error, Toast.LENGTH_SHORT).show();
+            intent = new Intent(context, ServerStatusUpdateService.class);
+            mContext.stopService(intent);
+        }
     }
 }

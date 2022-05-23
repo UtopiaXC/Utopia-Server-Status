@@ -15,6 +15,7 @@
     <string name="address_format_wrong">您输入的地址格式有误</string>
     <string name="address_invalid">地址无效，请检查您的地址是否为您的ServerStatus-Hotaru地址，且能够正常访问其json接口。</string>
     <string name="background_notification">USS正在后台运行</string>
+    <string name="background_service_error">后台服务进程故障并终止</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>

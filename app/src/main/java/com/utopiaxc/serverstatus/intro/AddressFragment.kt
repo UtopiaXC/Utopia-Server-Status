@@ -119,6 +119,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                 editor.remove("first_start")
                 editor.apply()
             }
+
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
         })
@@ -196,12 +197,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
         }
     }
 
-//    inner class ServerSetReceiver : BroadcastReceiver() {
-//        override fun onReceive(context: Context, intent: Intent) {
-//
-//        }
-//    }
-
 
     /**
      * API检查信息句柄
@@ -221,15 +216,6 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
             super.handleMessage(msg)
             if (msg.what == Companion.ADDRESS_CHECK_FLAG) {
                 if (addressIsSet) {
-//                    val receiver = ServerSetReceiver()
-//                    val intentFilter = IntentFilter()
-//                    intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED")
-//                    context.registerReceiver(
-//                        receiver,
-//                        intentFilter,
-//                        "com.utopiaxc.receiver.receivebroadcast",
-//                        null
-//                    )
                     //如果检查成功则通过按钮显示并设置偏好值
                     binding.buttonSubmitAddress.setText(R.string.succeed)
                     binding.buttonSubmitAddress.isEnabled = false
