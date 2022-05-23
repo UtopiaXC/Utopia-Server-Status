@@ -13,7 +13,7 @@ import com.utopiaxc.serverstatus.R;
 import java.util.List;
 
 /**
- * <p>
+ * 服务器卡片适配器
  *
  * @author UtopiaXC
  * @since 2022-05-23 17:45
@@ -23,6 +23,14 @@ public class ServerCardAdapter extends BaseQuickAdapter<ServerCardBean, BaseView
         super(R.layout.card_server, data);
     }
 
+    /**
+     * 适配器数据绑定
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 23:27:41
+     * @param baseViewHolder 数据设置器
+     * @param serverCardBean 数据实体
+     */
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, ServerCardBean serverCardBean) {
         baseViewHolder.setImageResource(R.id.regionFlag, serverCardBean.getRegionFlag());
@@ -31,5 +39,15 @@ public class ServerCardAdapter extends BaseQuickAdapter<ServerCardBean, BaseView
         baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.server_load_title) + serverCardBean.getServerLoad());
         ProgressBar progressBar = baseViewHolder.getView(R.id.progressLoad);
         progressBar.setProgress((int) (serverCardBean.getServerLoad() * 100));
+    }
+
+    /**
+     * 注册卡片监听ID
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 23:27:23
+     */
+    public void registerItemClickID() {
+        this.addChildClickViewIds(R.id.cardServer);
     }
 }

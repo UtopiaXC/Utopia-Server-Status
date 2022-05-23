@@ -1,7 +1,7 @@
 package com.utopiaxc.serverstatus.Beans;
 
 /**
- * 开源许可证
+ * 开源许可证卡片数据
  *
  * @author UtopiaXC
  * @since 2022-05-23 21:09

@@ -148,6 +148,7 @@ public class AboutFragment extends MaterialAboutFragment {
                             .setMessage(R.string.cache_clear_confirm)
                             .setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
                                 new Thread(() -> {
+                                    //删除全部数据库数据
                                     List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
                                     Variables.database.serverDao().deleteServer(serverBeans.toArray(new ServerBean[0]));
                                     List<StatusBean> statusBeans = Variables.database.statusDao().getAll();

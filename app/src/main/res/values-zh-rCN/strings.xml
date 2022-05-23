@@ -6,6 +6,7 @@
     <string name="title_servers">服务器列表</string>
     <string name="title_about">关于</string>
     <string name="title_activity_licences">开源许可证</string>
+    <string name="title_server">服务器详情</string>
 
     <!--    显示字符串-->
     <string name="welcome">欢迎使用USS</string>

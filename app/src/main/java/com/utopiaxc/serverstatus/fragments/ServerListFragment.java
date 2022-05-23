@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,8 +20,12 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.utopiaxc.serverstatus.Beans.LicensesBean;
 import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.R;
+import com.utopiaxc.serverstatus.activities.ServerActivity;
 import com.utopiaxc.serverstatus.adapters.ServerCardAdapter;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
@@ -66,6 +71,15 @@ public class ServerListFragment extends Fragment {
         binding.listServerList.setLayoutManager(new LinearLayoutManager(requireContext()));
         serverCardBeans = new ArrayList<>();
         serverCardAdapter = new ServerCardAdapter(serverCardBeans);
+        serverCardAdapter.registerItemClickID();
+        serverCardAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            if (view.getId() == R.id.cardServer) {
+                ServerCardBean serverCardBean = (ServerCardBean) adapter.getItem(position);
+                Intent intent = new Intent(context, ServerActivity.class);
+                intent.putExtra("serverId", serverCardBean.getServerId());
+                startActivity(intent);
+            }
+        });
         binding.listServerList.setAdapter(serverCardAdapter);
 
         //注册后台服务进程异常广播
@@ -123,10 +137,12 @@ public class ServerListFragment extends Fragment {
 
         @Override
         public void run() {
+            //查询全部服务器的最新状态
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
             List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
             serverCardBeans.clear();
             for (StatusBean statusBean : statusBeans) {
+                //将服务器名进行映射
                 ServerCardBean serverCardBean = new ServerCardBean();
                 for (ServerBean serverBean : serverBeans) {
                     if (serverBean.getId().equals(statusBean.getServerId())) {
@@ -143,22 +159,28 @@ public class ServerListFragment extends Fragment {
                 serverCardBean.setRegionFlag(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
                 serverCardBeans.add(serverCardBean);
             }
+            //发送消息
             Message msg = new Message();
             msg.what = messageUpdateFlag;
             serverListFragmentHandler.sendMessage(msg);
         }
     }
 
+    /**
+     * 服务器列表消息句柄
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 23:23:00
+     */
     class ServerListFragmentHandler extends Handler {
-
         public ServerListFragmentHandler(@NonNull Looper looper) {
             super(looper);
         }
-
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+            //当收到数据更新消息时调用适配器更新
             if (msg.what == messageUpdateFlag) {
                 serverCardAdapter.notifyDataSetChanged();
             }

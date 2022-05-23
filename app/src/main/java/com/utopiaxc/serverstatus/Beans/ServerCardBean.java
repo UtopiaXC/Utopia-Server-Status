@@ -3,7 +3,7 @@ package com.utopiaxc.serverstatus.Beans;
 import java.util.UUID;
 
 /**
- * <p>
+ * 服务器卡片数据
  *
  * @author UtopiaXC
  * @since 2022-05-23 17:45

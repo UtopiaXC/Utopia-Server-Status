@@ -24,10 +24,16 @@
         android:theme="@style/Theme.ServerStatus"
         tools:targetApi="31">
         <activity
-            android:name=".activities.LicencesActivity"
-            android:label="@string/licenses"
+            android:name=".activities.ConditionServerListActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".activities.ServerActivity"
+            android:exported="false"
+            android:label="@string/title_server" />
+        <activity
+            android:name=".activities.LicencesActivity"
+            android:exported="false"
+            android:label="@string/licenses" />
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false"

@@ -1,7 +1,7 @@
 package com.utopiaxc.serverstatus.Beans;
 
 /**
- * <p>
+ * 主页卡片数据
  *
  * @author UtopiaXC
  * @since 2022-05-23 13:34

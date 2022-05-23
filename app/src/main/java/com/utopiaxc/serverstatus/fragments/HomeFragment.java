@@ -22,12 +22,16 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.utopiaxc.serverstatus.Beans.HomePageBean;
+import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.R;
+import com.utopiaxc.serverstatus.activities.ConditionServerListActivity;
+import com.utopiaxc.serverstatus.activities.ServerActivity;
 import com.utopiaxc.serverstatus.adapters.HomePageAdapter;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.databinding.FragmentHomeBinding;
 import com.utopiaxc.serverstatus.services.ServerStatusUpdateService;
+import com.utopiaxc.serverstatus.utils.Constants;
 import com.utopiaxc.serverstatus.utils.Variables;
 
 import java.util.ArrayList;
@@ -57,7 +61,6 @@ public class HomeFragment extends Fragment {
     private int memoryOverload = 0;
     private int diskOverload = 0;
 
-    private enum CardFlag {NORMAL, OFFLINE, OVERLOAD, CPU_OVERLOAD, MEMORY_OVERLOAD, DISK_OVERLOAD}
 
     /**
      * 主页Fragment视图渲染
@@ -77,13 +80,22 @@ public class HomeFragment extends Fragment {
         homeFragmentHandler = new HomeFragmentHandler(context.getMainLooper());
         //设置显示列表适配器
         homePageBeans = new ArrayList<>();
-        homePageBeans.add(CardFlag.NORMAL.ordinal(), new HomePageBean(CardFlag.NORMAL.ordinal(), getString(R.string.home_normal), normal, R.drawable.server_normal));
-        homePageBeans.add(CardFlag.OFFLINE.ordinal(), new HomePageBean(CardFlag.OFFLINE.ordinal(), getString(R.string.home_offline), offline, R.drawable.server_offline));
-        homePageBeans.add(CardFlag.OVERLOAD.ordinal(), new HomePageBean(CardFlag.OVERLOAD.ordinal(), getString(R.string.home_system_overload), sysOverload, R.drawable.server_overload));
-        homePageBeans.add(CardFlag.CPU_OVERLOAD.ordinal(), new HomePageBean(CardFlag.CPU_OVERLOAD.ordinal(), getString(R.string.home_cpu_overload), cpuOverload, R.drawable.cpu));
-        homePageBeans.add(CardFlag.MEMORY_OVERLOAD.ordinal(), new HomePageBean(CardFlag.MEMORY_OVERLOAD.ordinal(), getString(R.string.home_memory_overload), memoryOverload, R.drawable.memory));
-        homePageBeans.add(CardFlag.DISK_OVERLOAD.ordinal(), new HomePageBean(CardFlag.DISK_OVERLOAD.ordinal(), getString(R.string.home_disk_overload), diskOverload, R.drawable.disk));
+        homePageBeans.add(Constants.CardFlag.NORMAL.ordinal(), new HomePageBean(Constants.CardFlag.NORMAL.ordinal(), getString(R.string.home_normal), normal, R.drawable.server_normal));
+        homePageBeans.add(Constants.CardFlag.OFFLINE.ordinal(), new HomePageBean(Constants.CardFlag.OFFLINE.ordinal(), getString(R.string.home_offline), offline, R.drawable.server_offline));
+        homePageBeans.add(Constants.CardFlag.OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.OVERLOAD.ordinal(), getString(R.string.home_system_overload), sysOverload, R.drawable.server_overload));
+        homePageBeans.add(Constants.CardFlag.CPU_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.CPU_OVERLOAD.ordinal(), getString(R.string.home_cpu_overload), cpuOverload, R.drawable.cpu));
+        homePageBeans.add(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), getString(R.string.home_memory_overload), memoryOverload, R.drawable.memory));
+        homePageBeans.add(Constants.CardFlag.DISK_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.DISK_OVERLOAD.ordinal(), getString(R.string.home_disk_overload), diskOverload, R.drawable.disk));
         homePageAdapter = new HomePageAdapter(homePageBeans);
+        homePageAdapter.registerItemClickID();
+        homePageAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            if (view.getId() == R.id.cardHomePage) {
+                HomePageBean homePageBean = (HomePageBean) adapter.getItem(position);
+                Intent intent = new Intent(context, ConditionServerListActivity.class);
+                intent.putExtra("type", homePageBean.getCardId());
+                startActivity(intent);
+            }
+        });
         binding.listHome.setAdapter(homePageAdapter);
 
         //注册后台服务进程异常广播
@@ -141,6 +153,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void run() {
+            //获取负载阈值
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
             normal = 0;
@@ -154,6 +167,7 @@ public class HomeFragment extends Fragment {
             double memoryLoad = Double.parseDouble(sharedPreferences.getString("memory_alert_threshold", "0.75"));
             double diskLoad = Double.parseDouble(sharedPreferences.getString("disk_alert_threshold", "0.75"));
 
+            //进行对应负载筛选
             for (StatusBean statusBean : statusBeans) {
                 try {
                     if (statusBean.getServerIpv4Status() || statusBean.getServerIpv6Status()) {
@@ -180,6 +194,14 @@ public class HomeFragment extends Fragment {
                     } else {
                         offline++;
                     }
+                    //设置新的适配器数据
+                    homePageBeans.get(Constants.CardFlag.NORMAL.ordinal()).setSubTitle(normal);
+                    homePageBeans.get(Constants.CardFlag.OFFLINE.ordinal()).setSubTitle(offline);
+                    homePageBeans.get(Constants.CardFlag.OVERLOAD.ordinal()).setSubTitle(sysOverload);
+                    homePageBeans.get(Constants.CardFlag.CPU_OVERLOAD.ordinal()).setSubTitle(cpuOverload);
+                    homePageBeans.get(Constants.CardFlag.MEMORY_OVERLOAD.ordinal()).setSubTitle(memoryOverload);
+                    homePageBeans.get(Constants.CardFlag.DISK_OVERLOAD.ordinal()).setSubTitle(diskOverload);
+                    //发送消息
                     Message msg = new Message();
                     msg.what = messageUpdateFlag;
                     homeFragmentHandler.sendMessage(msg);
@@ -191,8 +213,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * 主页消息句柄
+     *
+     * @author UtopiaXC
+     * @since 2022-05-23 23:24:41
+     */
     class HomeFragmentHandler extends Handler {
-
         public HomeFragmentHandler(@NonNull Looper looper) {
             super(looper);
         }
@@ -201,13 +228,8 @@ public class HomeFragment extends Fragment {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+            //当收到数据更新消息时更新适配器
             if (msg.what == messageUpdateFlag) {
-                homePageBeans.get(CardFlag.NORMAL.ordinal()).setSubTitle(normal);
-                homePageBeans.get(CardFlag.OFFLINE.ordinal()).setSubTitle(offline);
-                homePageBeans.get(CardFlag.OVERLOAD.ordinal()).setSubTitle(sysOverload);
-                homePageBeans.get(CardFlag.CPU_OVERLOAD.ordinal()).setSubTitle(cpuOverload);
-                homePageBeans.get(CardFlag.MEMORY_OVERLOAD.ordinal()).setSubTitle(memoryOverload);
-                homePageBeans.get(CardFlag.DISK_OVERLOAD.ordinal()).setSubTitle(diskOverload);
                 homePageAdapter.notifyDataSetChanged();
             }
         }
