@@ -79,4 +79,7 @@
     <string name="home_cpu_overload">Cpu Overload</string>
     <string name="home_memory_overload">Memory Overload</string>
     <string name="home_disk_overload">Disk Exhausted</string>
+
+    <!--    Server List-->
+    <string name="server_load_title">Server Load:</string>
 </resources>

@@ -4,11 +4,23 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.249" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_baseline_code_24.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_china.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_germany.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_hk.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_india.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_jp.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_korea.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_singapore.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_uk.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_un.xml" value="0.2555" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_flag_us.xml" value="0.2555" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/drawable/ic_launcher_background.xml" value="0.249" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/activity_intro.xml" value="0.5354166666666667" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/activity_licences.xml" value="0.3109375" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/activity_main.xml" value="0.55" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/card_home_page.xml" value="0.5489583333333333" />
+        <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/card_server.xml" value="0.55" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/fragment_about.xml" value="0.55" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/fragment_address.xml" value="0.55" />
         <entry key="..\:/Users/UtopiaXC/AndroidStudioProjects/ServerStatus/app/src/main/res/layout/fragment_dashboard.xml" value="0.55" />

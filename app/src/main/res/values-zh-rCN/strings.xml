@@ -77,4 +77,7 @@
     <string name="home_cpu_overload">CPU过载</string>
     <string name="home_memory_overload">内存过载</string>
     <string name="home_disk_overload">硬盘容量耗尽</string>
+
+    <!--    服务器别聊-->
+    <string name="server_load_title">负载：</string>
 </resources>

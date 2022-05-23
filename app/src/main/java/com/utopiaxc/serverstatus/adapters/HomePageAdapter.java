@@ -25,6 +25,6 @@ public class HomePageAdapter extends BaseQuickAdapter<HomePageBean, BaseViewHold
     protected void convert(@NonNull BaseViewHolder baseViewHolder, HomePageBean homePageBean) {
         baseViewHolder.setText(R.id.homePageCardTitle, homePageBean.getTitle());
         baseViewHolder.setText(R.id.homePageCardCount, String.valueOf(homePageBean.getSubTitle()));
-        baseViewHolder.setImageResource(R.id.honePageCardIcon, homePageBean.getIconId());
+        baseViewHolder.setImageResource(R.id.homePageCardIcon, homePageBean.getIconId());
     }
 }
