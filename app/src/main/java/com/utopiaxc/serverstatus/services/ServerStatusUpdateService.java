@@ -35,6 +35,7 @@ public class ServerStatusUpdateService extends Service {
     private final String NOTIFICATION_CHANNEL_ID = "USS_BACKGROUND_NOTIFICATION";
     private final int NOTIFICATION_ID = 154651133;
     private Thread updateThread;
+    private ServerUpdateErrorReceiver serverUpdateErrorReceiver;
 
     /**
      * 服务入口
@@ -67,7 +68,7 @@ public class ServerStatusUpdateService extends Service {
         }
 
         //注册后台服务进程异常广播
-        ServerUpdateErrorReceiver serverUpdateErrorReceiver=new ServerUpdateErrorReceiver();
+        serverUpdateErrorReceiver=new ServerUpdateErrorReceiver();
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATE_ERROR");
         mContext.registerReceiver(serverUpdateErrorReceiver,intentFilter,"com.utopiaxc.receiver.receivebroadcast",null);
@@ -145,6 +146,8 @@ public class ServerStatusUpdateService extends Service {
         updateThread.interrupt();
         //回收后台通知
         notificationManager.cancel(NOTIFICATION_ID);
+        //回收广播监听器
+        mContext.unregisterReceiver(serverUpdateErrorReceiver);
     }
 
     /**
