@@ -4,12 +4,12 @@
     package="com.utopiaxc.serverstatus">
 
     <permission
-        android:name="com.utopiaxc.receiver.receivebroadcast"
+        android:name="com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST"
         android:label="BroadcastReceiverPermission"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.utopiaxc.receiver.receivebroadcast" />
+    <uses-permission android:name="com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 

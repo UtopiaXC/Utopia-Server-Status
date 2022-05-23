@@ -71,7 +71,7 @@ public class ServerStatusUpdateService extends Service {
         serverUpdateErrorReceiver=new ServerUpdateErrorReceiver();
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATE_ERROR");
-        mContext.registerReceiver(serverUpdateErrorReceiver,intentFilter,"com.utopiaxc.receiver.receivebroadcast",null);
+        mContext.registerReceiver(serverUpdateErrorReceiver,intentFilter,"com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST",null);
     }
 
     /**

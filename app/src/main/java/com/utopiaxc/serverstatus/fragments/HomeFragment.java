@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
         serverUpdatedReceiver = new ServerUpdatedReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.receivebroadcast", null);
+        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
         new Thread(new GetServerUpdatedStatus()).start();
         return binding.getRoot();
     }
