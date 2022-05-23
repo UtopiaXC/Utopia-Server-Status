@@ -42,21 +42,20 @@ public interface StatusDao {
     /**
      * 获取已被删除的服务器的状态
      *
+     * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
      * @author UtopiaXC
      * @since 2022-05-23 11:57:51
-     * @param serverIds 未被删除的服务器ID
-     * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
      */
-    @Query("SELECT * FROM status WHERE server_id NOT IN (:serverIds)")
-    List<StatusBean> getDeletedStatus(List<String> serverIds);
+    @Query("SELECT * FROM status WHERE server_id NOT IN (SELECT id FROM servers)")
+    List<StatusBean> getDeletedStatus();
 
     /**
      * 获取全部过期状态
      *
-     * @author UtopiaXC
-     * @since 2022-05-23 11:58:12
      * @param exp 过期时间
      * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
+     * @author UtopiaXC
+     * @since 2022-05-23 11:58:12
      */
     @Query("SELECT * FROM status WHERE server_timestamp < :exp")
     List<StatusBean> getExpiredStatus(int exp);
@@ -64,10 +63,20 @@ public interface StatusDao {
     /**
      * 删除状态
      *
+     * @param status 状态列表
      * @author UtopiaXC
      * @since 2022-05-23 11:58:33
-     * @param status 状态列表
      */
     @Delete
     void deleteStatus(StatusBean... status);
+
+    /**
+     * 获取最新的服务器状态
+     *
+     * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
+     * @author UtopiaXC
+     * @since 2022-05-23 15:20:43
+     */
+    @Query("SELECT * FROM status WHERE server_timestamp = (SELECT MAX(server_timestamp) FROM status) AND server_id IN (SELECT id FROM servers)")
+    List<StatusBean> getNewestStatus();
 }

@@ -1,5 +1,6 @@
 package com.utopiaxc.serverstatus.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,7 +16,12 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.activities.LicencesActivity;
 import com.utopiaxc.serverstatus.activities.SettingsActivity;
+import com.utopiaxc.serverstatus.database.model.ServerBean;
+import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.utils.Constants;
+import com.utopiaxc.serverstatus.utils.Variables;
+
+import java.util.List;
 
 /**
  * 关于页面Fragment
@@ -24,14 +30,13 @@ import com.utopiaxc.serverstatus.utils.Constants;
  * @since 2022-05-22 22:53:08
  */
 public class AboutFragment extends MaterialAboutFragment {
-
     /**
      * 设置关于卡片
      *
-     * @author UtopiaXC
-     * @since 2022-05-22 22:53:33
      * @param activityContext 调用活动上下文
      * @return com.danielstone.materialaboutlibrary.model.MaterialAboutList
+     * @author UtopiaXC
+     * @since 2022-05-22 22:53:33
      */
     @Override
     protected MaterialAboutList getMaterialAboutList(final Context activityContext) {
@@ -66,7 +71,7 @@ public class AboutFragment extends MaterialAboutFragment {
         appCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.licenses)
                 .icon(new IconicsDrawable(activityContext)
-                        .icon(CommunityMaterial.Icon.cmd_book)
+                        .icon(CommunityMaterial.Icon.cmd_code_tags)
                         .sizeDp(18))
                 .setOnClickAction(() -> {
                     Intent intent = new Intent(activityContext, LicencesActivity.class);
@@ -128,6 +133,31 @@ public class AboutFragment extends MaterialAboutFragment {
                 .setOnClickAction(() -> {
                     Intent intent = new Intent(requireActivity(), SettingsActivity.class);
                     startActivity(intent);
+                })
+                .build());
+
+        //清空数据缓存
+        convenienceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.clear_cache)
+                .icon(new IconicsDrawable(activityContext)
+                        .icon(CommunityMaterial.Icon.cmd_delete)
+                        .sizeDp(18))
+                .setOnClickAction(() -> {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(R.string.warning)
+                            .setMessage(R.string.cache_clear_confirm)
+                            .setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
+                                new Thread(() -> {
+                                    List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
+                                    Variables.database.serverDao().deleteServer(serverBeans.toArray(new ServerBean[0]));
+                                    List<StatusBean> statusBeans = Variables.database.statusDao().getAll();
+                                    Variables.database.statusDao().deleteStatus(statusBeans.toArray(new StatusBean[0]));
+                                }).start();
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .create()
+                            .show();
+
                 })
                 .build());
 

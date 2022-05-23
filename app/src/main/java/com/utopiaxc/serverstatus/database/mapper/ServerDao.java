@@ -89,7 +89,6 @@ public interface ServerDao {
      * 删除对象
      *
      * @param serverBeans 服务器
-     * @return java.util.List<com.utopiaxc.serverstatus.database.model.ServerBean>
      * @author UtopiaXC
      * @since 2022-05-23 10:07:28
      */

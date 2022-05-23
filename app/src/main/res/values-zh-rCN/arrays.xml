@@ -36,4 +36,16 @@
         <item>95%</item>
         <item>100%</item>
     </string-array>
+
+    <string-array name="system_loads_entries">
+        <item>0.5</item>
+        <item>0.75</item>
+        <item>0.8</item>
+        <item>0.9</item>
+        <item>0.95</item>
+        <item>1.0 （默认）</item>
+        <item>1.5</item>
+        <item>2.0</item>
+    </string-array>
+
 </resources>

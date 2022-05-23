@@ -77,4 +77,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.79'
     //列表适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7'
+    //图表库
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

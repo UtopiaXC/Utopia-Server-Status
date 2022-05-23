@@ -16,6 +16,7 @@
     <string name="address_invalid">地址无效，请检查您的地址是否为您的ServerStatus-Hotaru地址，且能够正常访问其json接口。</string>
     <string name="background_notification">USS正在后台运行</string>
     <string name="background_service_error">后台服务进程故障并终止</string>
+    <string name="cache_clear_confirm">真的要清空全部服务器数据？</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>
@@ -41,6 +42,7 @@
     <string name="feedback_by_email">通过邮件反馈</string>
     <string name="changelog_title">更新日志（请等待从GitHub加载）</string>
     <string name="feedback_subject">反馈：Utopia Server Status</string>
+    <string name="clear_cache">清空数据缓存</string>
 
     <!--    设置-->
     <string name="title_activity_settings">设置</string>
@@ -68,4 +70,11 @@
     <string name="disk_load_description">当硬盘负载超过阈值时通知</string>
     <string name="disk_load_threshold">硬盘负载阈值</string>
 
+    <!--   主页标签-->
+    <string name="home_normal">运行正常</string>
+    <string name="home_offline">离线</string>
+    <string name="home_system_overload">系统负载异常</string>
+    <string name="home_cpu_overload">CPU过载</string>
+    <string name="home_memory_overload">内存过载</string>
+    <string name="home_disk_overload">硬盘容量耗尽</string>
 </resources>

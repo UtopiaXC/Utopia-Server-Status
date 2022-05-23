@@ -17,6 +17,7 @@
     <string name="address_invalid">Address invalid, Please confirm if your address is your ServerStatus-Hotaru address.</string>
     <string name="background_notification">USS is running in background</string>
     <string name="background_service_error">Background Server Error and Shutdown</string>
+    <string name="cache_clear_confirm">Sure to clean up all server data?</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>
@@ -32,6 +33,7 @@
     <string name="settings">Settings</string>
 
 
+
     <!--    about-->
     <string name="version">Version</string>
     <string name="changelog">Change Log</string>
@@ -42,6 +44,7 @@
     <string name="feedback_by_email">Feedback by Email</string>
     <string name="changelog_title">Change Log(Please wait for GitHub)</string>
     <string name="feedback_subject">Feedback For Utopia Server Status</string>
+    <string name="clear_cache">Clear data cache</string>
 
     <!--settings-->
     <string name="title_activity_settings">Settings</string>
@@ -68,4 +71,12 @@
     <string name="disk_load">Disk Load</string>
     <string name="disk_load_description">Alert when disk overload.</string>
     <string name="disk_load_threshold">Disk Load Threshold</string>
+
+    <!--    Home Tags-->
+    <string name="home_normal">Normal</string>
+    <string name="home_offline">Offline</string>
+    <string name="home_system_overload">System Overload</string>
+    <string name="home_cpu_overload">Cpu Overload</string>
+    <string name="home_memory_overload">Memory Overload</string>
+    <string name="home_disk_overload">Disk Exhausted</string>
 </resources>

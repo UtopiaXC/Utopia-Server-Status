@@ -76,6 +76,7 @@ public class UpdateStatus implements Runnable {
                     servers.add((JSONObject) serverObject);
                 }
 
+
                 //检索数据库是否拥有该服务器，如没有则添加
                 List<String> names = new ArrayList<>();
                 for (JSONObject jsonObject : servers) {
@@ -103,7 +104,6 @@ public class UpdateStatus implements Runnable {
 
                 //重新检索映射并向状态库添加数据
                 serverBeans = Variables.database.serverDao().getByNames(names);
-                System.out.println(serverBeans);
                 List<StatusBean> statusBeans = new ArrayList<>();
                 for (JSONObject jsonObject : servers) {
                     UUID server_id = null;
@@ -123,9 +123,9 @@ public class UpdateStatus implements Runnable {
                     boolean serverIpv6 = jsonObject.getBoolean("online6");
                     String serverRegion = jsonObject.getString("region");
                     StatusBean statusBean = new StatusBean();
-                    statusBean.setId(server_id);
+                    statusBean.setServerId(server_id);
                     statusBean.setServerIpv4Status(serverIpv4);
-                    statusBean.setServerIpv4Status(serverIpv6);
+                    statusBean.setServerIpv6Status(serverIpv6);
                     statusBean.setServerType(serverType);
                     statusBean.setServerLocation(serverLocation);
                     statusBean.setServerTimestamp(timestamp);
@@ -166,15 +166,13 @@ public class UpdateStatus implements Runnable {
                     statusBean.setServerDiskPercent(serverDiskLoad);
                     statusBeans.add(statusBean);
                 }
-                System.out.println(statusBeans);
                 Variables.database.statusDao().insertAll(statusBeans.toArray(new StatusBean[0]));
 
                 //删除已被删除的服务器的状态历史中不存在的状态
                 List<String> serverIds = new ArrayList<>();
-                for (ServerBean serverBean : serverBeans)
-                    serverIds.add(serverBean.getId().toString());
-                List<StatusBean> statusBeansToDelete = Variables.database.statusDao().getDeletedStatus(serverIds);
+                List<StatusBean> statusBeansToDelete = Variables.database.statusDao().getDeletedStatus();
                 Variables.database.statusDao().deleteStatus(statusBeansToDelete.toArray(new StatusBean[0]));
+
 
                 //清理过期数据
                 int exp = Integer.parseInt(sharedPreferences.getString("archive_time", "5")) * 24 * 60 * 60;
@@ -186,11 +184,12 @@ public class UpdateStatus implements Runnable {
 
                 //完成服务器数据更新后发送广播
                 Intent broadcast = new Intent("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
+                broadcast.putExtra("timestamp",timestamp);
                 context.sendBroadcast(broadcast);
 
 
                 Date dateEnd = new Date();
-                System.out.println("数据获取完成，消耗时间：" + (dateEnd.getTime() - dateStart.getTime()) / 1000.0 + "秒");
+                Log.d("UPDATE STATUS TIMING","数据获取完成，消耗时间：" + (dateEnd.getTime() - dateStart.getTime()) / 1000.0 + "秒");
                 //休眠间隔
                 Thread.sleep(interval);
             } catch (InterruptedException ie) {

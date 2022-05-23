@@ -75,10 +75,10 @@
 
 
         <ListPreference
-            app:defaultValue="0.75"
+            app:defaultValue="1.0"
             app:dependency="system_load"
-            app:entries="@array/percent_entries"
-            app:entryValues="@array/percent_values"
+            app:entries="@array/system_loads_entries"
+            app:entryValues="@array/system_loads_values"
             app:key="system_load_threshold"
             app:title="@string/system_load_threshold"
             app:useSimpleSummaryProvider="true" />
