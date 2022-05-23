@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.R;
@@ -23,7 +24,6 @@ import com.utopiaxc.serverstatus.adapters.ServerCardAdapter;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.databinding.ActivityConditionServerListBinding;
-import com.utopiaxc.serverstatus.databinding.FragmentServerListBinding;
 import com.utopiaxc.serverstatus.utils.Constants;
 import com.utopiaxc.serverstatus.utils.Variables;
 
@@ -38,7 +38,7 @@ import java.util.Objects;
  * @since 2022-05-23 23:34:20
  */
 public class ConditionServerListActivity extends AppCompatActivity {
-    private FragmentServerListBinding binding;
+    private ActivityConditionServerListBinding binding;
     protected Context context;
     protected List<ServerCardBean> serverCardBeans;
     private final int messageUpdateFlag = 165161414;
@@ -59,7 +59,7 @@ public class ConditionServerListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //UI与参数
-        ActivityConditionServerListBinding binding = ActivityConditionServerListBinding.inflate(getLayoutInflater());
+        binding = ActivityConditionServerListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -241,6 +241,11 @@ public class ConditionServerListActivity extends AppCompatActivity {
             if (msg.what == messageUpdateFlag) {
                 //当收到数据更新消息时更新数据
                 serverCardAdapter.notifyDataSetChanged();
+                if (serverCardBeans.size()==0){
+                    binding.noConditionServerAlert.setVisibility(View.VISIBLE);
+                }else{
+                    binding.noConditionServerAlert.setVisibility(View.GONE);
+                }
             }
         }
     }

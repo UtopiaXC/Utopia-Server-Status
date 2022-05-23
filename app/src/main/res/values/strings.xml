@@ -19,6 +19,7 @@
     <string name="background_notification">USS is running in background</string>
     <string name="background_service_error">Background Server Error and Shutdown</string>
     <string name="cache_clear_confirm">Sure to clean up all server data?</string>
+    <string name="no_server_to_show">No server to show</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>

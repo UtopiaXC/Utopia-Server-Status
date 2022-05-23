@@ -176,6 +176,7 @@ public class ServerListFragment extends Fragment {
         public ServerListFragmentHandler(@NonNull Looper looper) {
             super(looper);
         }
+
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -183,6 +184,11 @@ public class ServerListFragment extends Fragment {
             //当收到数据更新消息时调用适配器更新
             if (msg.what == messageUpdateFlag) {
                 serverCardAdapter.notifyDataSetChanged();
+                if (serverCardBeans.size() == 0) {
+                    binding.noServerAlert.setVisibility(View.VISIBLE);
+                } else {
+                    binding.noServerAlert.setVisibility(View.GONE);
+                }
             }
         }
     }

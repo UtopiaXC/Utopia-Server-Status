@@ -26,19 +26,25 @@ public class ServerCardAdapter extends BaseQuickAdapter<ServerCardBean, BaseView
     /**
      * 适配器数据绑定
      *
-     * @author UtopiaXC
-     * @since 2022-05-23 23:27:41
      * @param baseViewHolder 数据设置器
      * @param serverCardBean 数据实体
+     * @author UtopiaXC
+     * @since 2022-05-23 23:27:41
      */
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, ServerCardBean serverCardBean) {
         baseViewHolder.setImageResource(R.id.regionFlag, serverCardBean.getRegionFlag());
         baseViewHolder.setText(R.id.serverName, serverCardBean.getServerName());
         baseViewHolder.setText(R.id.serverType, serverCardBean.getServerType());
-        baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.server_load_title) + serverCardBean.getServerLoad());
-        ProgressBar progressBar = baseViewHolder.getView(R.id.progressLoad);
-        progressBar.setProgress((int) (serverCardBean.getServerLoad() * 100));
+        if (serverCardBean.getServerLoad() != null && serverCardBean.getServerLoad() != null) {
+            baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.server_load_title) + serverCardBean.getServerLoad());
+            ProgressBar progressBar = baseViewHolder.getView(R.id.progressLoad);
+            progressBar.setProgress((int) (serverCardBean.getServerLoad() * 100));
+        } else {
+            baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.home_offline));
+            ProgressBar progressBar = baseViewHolder.getView(R.id.progressLoad);
+            progressBar.setProgress(0);
+        }
     }
 
     /**
