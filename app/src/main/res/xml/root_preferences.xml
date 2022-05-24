@@ -65,6 +65,23 @@
             app:key="alert_notification"
             app:title="@string/notification_switch" />
 
+        <ListPreference
+            app:defaultValue="5"
+            app:dependency="alert_notification"
+            app:entries="@array/alert_interval_entries"
+            app:entryValues="@array/alert_interval_values"
+            app:key="same_overload_alert_interval"
+            app:title="@string/same_overload_alert_interval"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:dependency="alert_notification"
+            app:key="server_offline"
+            app:summaryOff="@string/server_offline_description"
+            app:summaryOn="@string/server_offline_description"
+            app:title="@string/server_offline" />
+
         <SwitchPreferenceCompat
             android:defaultValue="false"
             app:dependency="alert_notification"

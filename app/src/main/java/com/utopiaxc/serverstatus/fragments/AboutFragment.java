@@ -16,6 +16,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.activities.LicencesActivity;
 import com.utopiaxc.serverstatus.activities.SettingsActivity;
+import com.utopiaxc.serverstatus.database.model.NotificationBean;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.utils.Constants;
@@ -153,6 +154,8 @@ public class AboutFragment extends MaterialAboutFragment {
                                     Variables.database.serverDao().deleteServer(serverBeans.toArray(new ServerBean[0]));
                                     List<StatusBean> statusBeans = Variables.database.statusDao().getAll();
                                     Variables.database.statusDao().deleteStatus(statusBeans.toArray(new StatusBean[0]));
+                                    List<NotificationBean> notificationBeans = Variables.database.notificationDao().getAll();
+                                    Variables.database.notificationDao().deleteNotifications(notificationBeans.toArray(new NotificationBean[0]));
                                 }).start();
                             })
                             .setNegativeButton(R.string.cancel, null)

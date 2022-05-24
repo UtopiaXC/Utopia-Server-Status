@@ -19,6 +19,8 @@
     <string name="background_service_error">后台服务进程故障并终止</string>
     <string name="cache_clear_confirm">真的要清空全部服务器数据？</string>
     <string name="no_server_to_show">暂无服务器可显示</string>
+    <string name="background_notification_title">后台服务通知</string>
+    <string name="server_alert_notification">服务器异常通知</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>
@@ -71,6 +73,9 @@
     <string name="disk_load">硬盘负载</string>
     <string name="disk_load_description">当硬盘负载超过阈值时通知</string>
     <string name="disk_load_threshold">硬盘负载阈值</string>
+    <string name="same_overload_alert_interval">通知事件持续时间</string>
+    <string name="server_offline_description">当服务器离线时发出通知</string>
+    <string name="server_offline">服务器离线</string>
 
     <!--   主页标签-->
     <string name="home_normal">运行正常</string>

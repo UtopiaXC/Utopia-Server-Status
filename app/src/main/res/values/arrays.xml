@@ -15,7 +15,7 @@
     <string-array name="interval_entries">
         <item>1 second</item>
         <item>2 second</item>
-        <item>5 second(Default)</item>
+        <item>5 second (Default)</item>
         <item>10 second</item>
         <item>30 second</item>
         <item>1 Minute</item>
@@ -41,7 +41,7 @@
     <string-array name="archive_time_entries">
         <item>1 Day</item>
         <item>2 Day</item>
-        <item>5 Day(Default)</item>
+        <item>5 Day (Default)</item>
         <item>10 Day</item>
         <item>30 Day</item>
         <item>Infinite</item>
@@ -94,5 +94,29 @@
         <item>1.0</item>
         <item>1.5</item>
         <item>2.0</item>
+    </string-array>
+
+    <string-array name="alert_interval_entries">
+        <item>1 Minute</item>
+        <item>5 Minutes (Default)</item>
+        <item>10 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+        <item>1.5 Hours</item>
+        <item>2 Hours</item>
+        <item>5 Hours</item>
+        <item>12 Hours</item>
+    </string-array>
+
+    <string-array name="alert_interval_values">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>300</item>
+        <item>720</item>
     </string-array>
 </resources>

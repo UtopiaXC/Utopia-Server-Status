@@ -20,6 +20,8 @@
     <string name="background_service_error">Background Server Error and Shutdown</string>
     <string name="cache_clear_confirm">Sure to clean up all server data?</string>
     <string name="no_server_to_show">No server to show</string>
+    <string name="background_notification_title">Background Notification</string>
+    <string name="server_alert_notification">Server Alert Notification</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>
@@ -50,7 +52,7 @@
     <!--settings-->
     <string name="title_activity_settings">Settings</string>
     <string name="theme">Theme</string>
-    <string name="web_address">Web Address</string>
+    <string name="web_address">API Address</string>
     <string name="background_service">Enable Background Service</string>
     <string name="background_service_title">Background Service</string>
     <string name="system">System</string>
@@ -72,6 +74,9 @@
     <string name="disk_load">Disk Load</string>
     <string name="disk_load_description">Alert when disk overload.</string>
     <string name="disk_load_threshold">Disk Load Threshold</string>
+    <string name="same_overload_alert_interval">Notification of event duration</string>
+    <string name="server_offline_description">Alert when server offline</string>
+    <string name="server_offline">Server Offline</string>
 
     <!--    Home Tags-->
     <string name="home_normal">Normal</string>
