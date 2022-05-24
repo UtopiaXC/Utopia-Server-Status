@@ -19,7 +19,6 @@
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -343,6 +342,65 @@
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/cpuChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/memoryChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/upChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/downChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/buttonExportServerData"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/export_report" />
         </LinearLayout>
     </ScrollView>
 

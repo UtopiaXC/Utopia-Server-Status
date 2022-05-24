@@ -1,6 +1,7 @@
 package com.utopiaxc.serverstatus.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -29,5 +30,10 @@ public class ThemeUtil {
         } else if (mode.equals(Constants.ThemeModeEnum.DAY_MODE.getMode())) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+    }
+
+    public static boolean isNightMode(Context context){
+        int mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return mode == Configuration.UI_MODE_NIGHT_YES;
     }
 }

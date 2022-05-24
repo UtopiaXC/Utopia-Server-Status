@@ -98,6 +98,6 @@ public interface StatusDao {
      * @author UtopiaXC
      * @since 2022-05-23 15:20:43
      */
-    @Query("SELECT * FROM status WHERE server_timestamp = server_id =:serverId ORDER BY server_timestamp DESC LIMIT 1000")
+    @Query("SELECT * FROM status WHERE  server_id =:serverId ORDER BY server_timestamp DESC LIMIT 50")
     List<StatusBean> getDataForChartByServerId(UUID serverId);
 }

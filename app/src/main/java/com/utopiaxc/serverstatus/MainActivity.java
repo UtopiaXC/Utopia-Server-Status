@@ -60,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //非初次启动检查数据获取方式是否为后台
             if (!sharedPreferences.getBoolean("backgroundService", true)) {
-                Variables.updateThread = new Thread(new UpdateStatus(this));
-                Variables.updateThread.start();
+                if (!(Variables.updateThread!=null&&Variables.updateThread.isAlive())){
+                    Variables.updateThread = new Thread(new UpdateStatus(this));
+                    Variables.updateThread.start();
+                }
             } else {
                 Intent service = new Intent(this, ServerStatusUpdateService.class);
                 startService(service);
@@ -81,5 +83,6 @@ public class MainActivity extends AppCompatActivity {
         }
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        System.out.println("MainActivity被启动");
     }
 }

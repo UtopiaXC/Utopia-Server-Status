@@ -102,4 +102,7 @@
     <string name="total">Total</string>
     <string name="network">Network</string>
     <string name="realtime">Now</string>
+    <string name="upload">Download</string>
+    <string name="download">Upload</string>
+    <string name="export_report">Export archive data (csv)</string>
 </resources>

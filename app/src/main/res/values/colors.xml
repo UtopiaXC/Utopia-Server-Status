@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="succeed">#66bb6a</color>
+    <color name="chart_night">#5c007a</color>
+    <color name="chart_day">#c158dc</color>
 </resources>

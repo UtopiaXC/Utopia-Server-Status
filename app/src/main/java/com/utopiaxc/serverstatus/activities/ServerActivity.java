@@ -1,30 +1,48 @@
 package com.utopiaxc.serverstatus.activities;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.databinding.ActivityServerBinding;
 import com.utopiaxc.serverstatus.utils.Constants;
 import com.utopiaxc.serverstatus.utils.StorageUtil;
+import com.utopiaxc.serverstatus.utils.ThemeUtil;
 import com.utopiaxc.serverstatus.utils.Variables;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.UUID;
 
 /**
@@ -66,6 +84,13 @@ public class ServerActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
         context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        setChartOptions(getString(R.string.cpu_load),  binding.cpuChart);
+        setChartOptions(getString(R.string.memory_load),  binding.memoryChart);
+        setChartOptions(getString(R.string.download),  binding.downChart);
+        setChartOptions(getString(R.string.upload),  binding.upChart);
+        binding.buttonExportServerData.setOnClickListener(view -> {
+
+        });
     }
 
     /**
@@ -138,7 +163,7 @@ public class ServerActivity extends AppCompatActivity {
             if (msg.what == SERVER_UPDATED) {
                 binding.serverInfoServerName.setText(serverBean.getServerName());
                 binding.serverInfoRegionFlag.setImageResource(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
-                binding.serverInfoServerType.setText(statusBean.getServerType()+ " " +statusBean.getServerLocation());
+                binding.serverInfoServerType.setText(statusBean.getServerType() + " " + statusBean.getServerLocation());
                 if (statusBean.getServerIpv4Status() || statusBean.getServerIpv6Status()) {
                     binding.serverDetailInfo.setVisibility(View.VISIBLE);
                     Double systemLoad = statusBean.getServerLoad();
@@ -161,29 +186,35 @@ public class ServerActivity extends AppCompatActivity {
                         binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + (int) (memoryLoad * 100) + "%");
                         binding.serverInfoProgressMemoryLoad.setProgress((int) (memoryLoad * 100));
                         binding.progressMemoryUsed.setProgress(memoryLoad.floatValue());
-                        if (statusBean.getServerMemoryTotal() != null)
+                        if (statusBean.getServerMemoryTotal() != null) {
                             binding.memoryTotal.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryTotal()) + " " + getString(R.string.total));
-                        if (statusBean.getServerMemoryUsed() != null)
+                        }
+                        if (statusBean.getServerMemoryUsed() != null) {
                             binding.memoryUsed.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryUsed()) + " " + getString(R.string.used));
+                        }
                     }
                     if (diskLoad != null) {
                         binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + (int) (diskLoad * 100) + "%");
                         binding.serverInfoDiskProgressLoad.setProgress((int) (diskLoad * 100));
                         binding.progressDiskUsed.setProgress(diskLoad.floatValue());
-                        if (statusBean.getServerDiskTotal() != null)
+                        if (statusBean.getServerDiskTotal() != null) {
                             binding.diskTotal.setText(StorageUtil.formatMbToString(statusBean.getServerDiskTotal()) + " " + getString(R.string.total));
-                        if (statusBean.getServerDiskUsed() != null)
+                        }
+                        if (statusBean.getServerDiskUsed() != null) {
                             binding.diskUsed.setText(StorageUtil.formatMbToString(statusBean.getServerDiskUsed()) + " " + getString(R.string.used));
+                        }
                     }
                     if (statusBean.getServerSwapPercent() != null) {
                         binding.progressSwapUsed.setProgress(statusBean.getServerSwapPercent().floatValue());
                     } else {
                         binding.progressSwapUsed.setProgress(0);
                     }
-                    if (statusBean.getServerSwapTotal() != null)
+                    if (statusBean.getServerSwapTotal() != null) {
                         binding.swapTotal.setText(StorageUtil.formatKbToString(statusBean.getServerSwapTotal()) + " " + getString(R.string.total));
-                    if (statusBean.getServerSwapUsed() != null)
+                    }
+                    if (statusBean.getServerSwapUsed() != null) {
                         binding.swapUsed.setText(StorageUtil.formatKbToString(statusBean.getServerSwapUsed()) + " " + getString(R.string.used));
+                    }
                     if (statusBean.getServerNetworkRealtimeDownloadSpeed() != null
                             && statusBean.getServerNetworkIn() != null) {
                         binding.networkDown.setText(
@@ -215,9 +246,108 @@ public class ServerActivity extends AppCompatActivity {
                     binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + getString(R.string.server_offline));
                     binding.serverDetailInfo.setVisibility(View.GONE);
                 }
+
+                List<StatusBean> statusBeanList = statusBeans;
+
+                List<Entry> cpuValues = new ArrayList<>();
+                List<Entry> memoryValues = new ArrayList<>();
+                List<Entry> netUpValues = new ArrayList<>();
+                List<Entry> netDownValues = new ArrayList<>();
+                int flag = 1;
+                Collections.reverse(statusBeanList);
+                for (StatusBean statusBean : statusBeanList) {
+                    if (statusBean.getServerCpuPercent() != null) {
+                        cpuValues.add(new Entry(flag++, statusBean.getServerCpuPercent().floatValue()));
+                    }
+                    if (statusBean.getServerMemoryPercent() != null) {
+                        memoryValues.add(new Entry(flag++, statusBean.getServerMemoryPercent().floatValue()));
+                    }
+                    if (statusBean.getServerNetworkRealtimeUploadSpeed() != null) {
+                        netUpValues.add(new Entry(flag++, statusBean.getServerNetworkRealtimeUploadSpeed().floatValue()));
+                        netDownValues.add(new Entry(flag++, statusBean.getServerCpuPercent().floatValue()));
+                    }
+                    if (statusBean.getServerNetworkRealtimeDownloadSpeed() != null) {
+                        netDownValues.add(new Entry(flag++, statusBean.getServerNetworkRealtimeDownloadSpeed().floatValue()));
+                    }
+                }
+                setChartDataSetOptions(new LineDataSet(cpuValues, null),binding.cpuChart);
+                setChartDataSetOptions(new LineDataSet(memoryValues, null),binding.memoryChart);
+                setChartDataSetOptions(new LineDataSet(netUpValues, null),binding.upChart);
+                setChartDataSetOptions(new LineDataSet(netDownValues, null),binding.downChart);
             }
         }
     }
 
+    /**
+     * 设置表组件样式
+     *
+     * @author UtopiaXC
+     * @since 2022-05-24 19:04:07
+     * @param title 表标题
+     * @param lineChart 表组件
+     */
+    private void setChartOptions(String title,LineChart lineChart) {
+        lineChart.setData(new LineData(new LineDataSet(new ArrayList<>(), null)));
+        lineChart.setTouchEnabled(false);
+        lineChart.getDescription().setEnabled(true);
+        lineChart.getDescription().setText(title);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenWidth = dm.widthPixels;
+        lineChart.getDescription().setPosition(screenWidth - 100, 80F);
+        lineChart.getDescription().setTextColor(Color.WHITE);
+        lineChart.getDescription().setTextSize(16F);
+        if (ThemeUtil.isNightMode(this)) {
+            lineChart.setBackgroundColor(getColor(R.color.chart_night));
+        } else {
+            lineChart.setBackgroundColor(getColor(R.color.chart_day));
+        }
 
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setPinchZoom(true);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setMaxHighlightDistance(300);
+
+        XAxis x = lineChart.getXAxis();
+        x.setPosition(XAxis.XAxisPosition.BOTTOM);
+        x.setTextColor(Color.WHITE);
+        x.setDrawGridLines(false);
+        x.setAxisLineColor(Color.WHITE);
+        YAxis y = lineChart.getAxisLeft();
+        y.setLabelCount(6, true);
+        y.setTextColor(Color.WHITE);
+        y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        y.setDrawGridLines(false);
+        y.setAxisLineColor(Color.WHITE);
+        lineChart.getAxisRight().setEnabled(false);
+    }
+
+    /**
+     * 设置数据样式
+     *
+     * @author UtopiaXC
+     * @since 2022-05-24 19:03:34
+     * @param dataSet 数据集合
+     * @param lineChart 表组件
+     */
+    private void setChartDataSetOptions(LineDataSet dataSet,LineChart lineChart) {
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setCubicIntensity(0.2f);
+        dataSet.setDrawFilled(true);
+        dataSet.setDrawCircles(false);
+        dataSet.setLineWidth(1.8f);
+        dataSet.setCircleRadius(4f);
+        dataSet.setCircleColor(Color.WHITE);
+        dataSet.setHighLightColor(Color.rgb(244, 117, 117));
+        dataSet.setColor(Color.WHITE);
+        dataSet.setValueTextSize(9f);
+        dataSet.setDrawValues(false);
+        dataSet.setFillColor(Color.WHITE);
+        dataSet.setFillAlpha(100);
+        dataSet.setDrawHorizontalHighlightIndicator(false);
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        lineChart.invalidate();
+    }
 }

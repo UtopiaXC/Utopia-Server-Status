@@ -29,9 +29,9 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * 设置Activity创建函数
      *
+     * @param savedInstanceState 参数
      * @author UtopiaXC
      * @since 2022-05-22 23:08:51
-     * @param savedInstanceState 参数
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +60,10 @@ public class SettingsActivity extends AppCompatActivity {
         /**
          * 偏好界面创建
          *
+         * @param savedInstanceState 参数
+         * @param rootKey            参数
          * @author UtopiaXC
          * @since 2022-05-22 23:10:15
-         * @param savedInstanceState 参数
-         * @param rootKey 参数
          */
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -85,8 +85,10 @@ public class SettingsActivity extends AppCompatActivity {
                     Variables.context.startService(service);
                 } else {
                     //关闭后台服务时关闭后台服务并启动基于上下文的数据获取线程
-                    Variables.updateThread = new Thread(new UpdateStatus(Variables.context));
-                    Variables.updateThread.start();
+                    if (!(Variables.updateThread != null && Variables.updateThread.isAlive())) {
+                        Variables.updateThread = new Thread(new UpdateStatus(Variables.context));
+                        Variables.updateThread.start();
+                    }
                     Variables.context.stopService(service);
                 }
                 return true;
@@ -97,10 +99,10 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * 返回键监听
      *
-     * @author UtopiaXC
-     * @since 2022-05-22 23:10:45
      * @param item 被点击的按钮
      * @return boolean
+     * @author UtopiaXC
+     * @since 2022-05-22 23:10:45
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

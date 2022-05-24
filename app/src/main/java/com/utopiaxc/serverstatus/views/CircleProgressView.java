@@ -12,7 +12,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 /**
- * <p>
+ * 圆形进度组件
  *
  * @author UtopiaXC
  * @since 2022-05-24 12:33
@@ -22,12 +22,9 @@ public class CircleProgressView extends View {
     private final int okSpeed = 3;
 
     private Paint paint;
-    //进度圈颜色
     private int circleOutsideColor;
-    //进度颜色
     private int circleProgressColor;
     private float progressW;
-    //进度条圆圈半径
     private float circleProgressR;
 
     private RectF progressRect;

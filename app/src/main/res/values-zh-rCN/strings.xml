@@ -101,4 +101,7 @@
     <string name="total">总计</string>
     <string name="network">网络</string>
     <string name="realtime">实时</string>
+    <string name="upload">下载</string>
+    <string name="download">上传</string>
+    <string name="export_report">导出数据存档（csv）</string>
 </resources>
