@@ -6,7 +6,6 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 
 import java.util.List;
