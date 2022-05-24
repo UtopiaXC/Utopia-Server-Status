@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.databinding.ActivityServerBinding;
 import com.utopiaxc.serverstatus.utils.Constants;
+import com.utopiaxc.serverstatus.utils.StorageUtil;
 import com.utopiaxc.serverstatus.utils.Variables;
 
 import java.util.List;
@@ -136,8 +138,9 @@ public class ServerActivity extends AppCompatActivity {
             if (msg.what == SERVER_UPDATED) {
                 binding.serverInfoServerName.setText(serverBean.getServerName());
                 binding.serverInfoRegionFlag.setImageResource(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
-                binding.serverInfoServerType.setText(statusBean.getServerType());
+                binding.serverInfoServerType.setText(statusBean.getServerType()+ " " +statusBean.getServerLocation());
                 if (statusBean.getServerIpv4Status() || statusBean.getServerIpv6Status()) {
+                    binding.serverDetailInfo.setVisibility(View.VISIBLE);
                     Double systemLoad = statusBean.getServerLoad();
                     Double cpuLoad = statusBean.getServerCpuPercent();
                     Double memoryLoad = statusBean.getServerMemoryPercent();
@@ -157,18 +160,64 @@ public class ServerActivity extends AppCompatActivity {
                     if (memoryLoad != null) {
                         binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + (int) (memoryLoad * 100) + "%");
                         binding.serverInfoProgressMemoryLoad.setProgress((int) (memoryLoad * 100));
+                        binding.progressMemoryUsed.setProgress(memoryLoad.floatValue());
+                        if (statusBean.getServerMemoryTotal() != null)
+                            binding.memoryTotal.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryTotal()) + " " + getString(R.string.total));
+                        if (statusBean.getServerMemoryUsed() != null)
+                            binding.memoryUsed.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryUsed()) + " " + getString(R.string.used));
                     }
                     if (diskLoad != null) {
                         binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + (int) (diskLoad * 100) + "%");
                         binding.serverInfoDiskProgressLoad.setProgress((int) (diskLoad * 100));
+                        binding.progressDiskUsed.setProgress(diskLoad.floatValue());
+                        if (statusBean.getServerDiskTotal() != null)
+                            binding.diskTotal.setText(StorageUtil.formatMbToString(statusBean.getServerDiskTotal()) + " " + getString(R.string.total));
+                        if (statusBean.getServerDiskUsed() != null)
+                            binding.diskUsed.setText(StorageUtil.formatMbToString(statusBean.getServerDiskUsed()) + " " + getString(R.string.used));
+                    }
+                    if (statusBean.getServerSwapPercent() != null) {
+                        binding.progressSwapUsed.setProgress(statusBean.getServerSwapPercent().floatValue());
+                    } else {
+                        binding.progressSwapUsed.setProgress(0);
+                    }
+                    if (statusBean.getServerSwapTotal() != null)
+                        binding.swapTotal.setText(StorageUtil.formatKbToString(statusBean.getServerSwapTotal()) + " " + getString(R.string.total));
+                    if (statusBean.getServerSwapUsed() != null)
+                        binding.swapUsed.setText(StorageUtil.formatKbToString(statusBean.getServerSwapUsed()) + " " + getString(R.string.used));
+                    if (statusBean.getServerNetworkRealtimeDownloadSpeed() != null
+                            && statusBean.getServerNetworkIn() != null) {
+                        binding.networkDown.setText(
+                                StorageUtil.formatByteSpeedToString(statusBean.getServerNetworkRealtimeDownloadSpeed())
+                                        + " "
+                                        + getString(R.string.realtime)
+                                        + " "
+                                        + StorageUtil.formatByteToString(statusBean.getServerNetworkIn())
+                                        + " "
+                                        + getString(R.string.total)
+                        );
+                    }
+                    if (statusBean.getServerNetworkRealtimeUploadSpeed() != null
+                            && statusBean.getServerNetworkOut() != null) {
+                        binding.networkUp.setText(
+                                StorageUtil.formatByteSpeedToString(statusBean.getServerNetworkRealtimeUploadSpeed())
+                                        + " "
+                                        + getString(R.string.realtime)
+                                        + " "
+                                        + StorageUtil.formatByteToString(statusBean.getServerNetworkOut())
+                                        + " "
+                                        + getString(R.string.total)
+                        );
                     }
                 } else {
                     binding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + getString(R.string.server_offline));
                     binding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + getString(R.string.server_offline));
                     binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + getString(R.string.server_offline));
                     binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + getString(R.string.server_offline));
+                    binding.serverDetailInfo.setVisibility(View.GONE);
                 }
             }
         }
     }
+
+
 }

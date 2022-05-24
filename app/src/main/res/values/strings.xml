@@ -94,4 +94,12 @@
     <string name="server_activity_cpu_load_title">CPU Load:</string>
     <string name="server_activity_memory_load_title">Memory Load:</string>
     <string name="server_activity_disk_load_title">Disk Load:</string>
+    <string name="memory">Memory</string>
+    <string name="cpu">CPU</string>
+    <string name="swap">SWAP</string>
+    <string name="disk">Disk</string>
+    <string name="used">Used</string>
+    <string name="total">Total</string>
+    <string name="network">Network</string>
+    <string name="realtime">Now</string>
 </resources>

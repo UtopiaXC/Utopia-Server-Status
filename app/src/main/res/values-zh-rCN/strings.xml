@@ -93,4 +93,12 @@
     <string name="server_activity_cpu_load_title">CPU使用率：</string>
     <string name="server_activity_memory_load_title">内存使用率：</string>
     <string name="server_activity_disk_load_title">硬盘容量使用率：</string>
+    <string name="memory">内存</string>
+    <string name="cpu">CPU</string>
+    <string name="swap">交换</string>
+    <string name="disk">硬盘</string>
+    <string name="used">已用</string>
+    <string name="total">总计</string>
+    <string name="network">网络</string>
+    <string name="realtime">实时</string>
 </resources>
