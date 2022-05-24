@@ -38,15 +38,15 @@ import java.util.Objects;
  * @since 2022-05-23 23:34:20
  */
 public class ConditionServerListActivity extends AppCompatActivity {
-    private ActivityConditionServerListBinding binding;
-    protected Context context;
-    protected List<ServerCardBean> serverCardBeans;
-    private final int messageUpdateFlag = 165161414;
-    protected ServerCardAdapter serverCardAdapter;
-    protected ServerUpdatedReceiver serverUpdatedReceiver;
-    protected ServerListFragmentHandler serverListFragmentHandler;
-    private int type;
-    private SharedPreferences sharedPreferences;
+    private ActivityConditionServerListBinding mBinding;
+    protected Context mContext;
+    protected List<ServerCardBean> mServerCardBeans;
+    private final int MESSAGE_UPDATED_FLAG = 165161414;
+    protected ServerCardAdapter mServerCardAdapter;
+    protected ServerUpdatedReceiver mServerUpdatedReceiver;
+    protected ServerListFragmentHandler mServerListFragmentHandler;
+    private int mType;
+    private SharedPreferences mSharedPreferences;
 
     /**
      * Activity创建
@@ -59,48 +59,48 @@ public class ConditionServerListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //UI与参数
-        binding = ActivityConditionServerListBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        context = this;
+        mBinding = ActivityConditionServerListBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
+        mContext = this;
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         //根据筛选类型显示标题
         Intent intent = getIntent();
-        type = (int) intent.getExtras().get("type");
-        if (type == Constants.CardFlag.NORMAL.ordinal()) {
+        mType = (int) intent.getExtras().get("type");
+        if (mType == Constants.CardFlag.NORMAL.ordinal()) {
             setTitle(R.string.home_normal);
-        } else if (type == Constants.CardFlag.OFFLINE.ordinal()) {
+        } else if (mType == Constants.CardFlag.OFFLINE.ordinal()) {
             setTitle(R.string.home_offline);
-        } else if (type == Constants.CardFlag.OVERLOAD.ordinal()) {
+        } else if (mType == Constants.CardFlag.OVERLOAD.ordinal()) {
             setTitle(R.string.home_system_overload);
-        } else if (type == Constants.CardFlag.CPU_OVERLOAD.ordinal()) {
+        } else if (mType == Constants.CardFlag.CPU_OVERLOAD.ordinal()) {
             setTitle(R.string.home_cpu_overload);
-        } else if (type == Constants.CardFlag.MEMORY_OVERLOAD.ordinal()) {
+        } else if (mType == Constants.CardFlag.MEMORY_OVERLOAD.ordinal()) {
             setTitle(R.string.home_memory_overload);
-        } else if (type == Constants.CardFlag.DISK_OVERLOAD.ordinal()) {
+        } else if (mType == Constants.CardFlag.DISK_OVERLOAD.ordinal()) {
             setTitle(R.string.home_disk_overload);
         }
         //设置适配器与消息句柄等
-        serverListFragmentHandler = new ServerListFragmentHandler(context.getMainLooper());
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        binding.listConditionServerList.setLayoutManager(new LinearLayoutManager(this));
-        serverCardBeans = new ArrayList<>();
-        serverCardAdapter = new ServerCardAdapter(serverCardBeans);
-        serverCardAdapter.registerItemClickID();
-        serverCardAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        mServerListFragmentHandler = new ServerListFragmentHandler(mContext.getMainLooper());
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mBinding.listConditionServerList.setLayoutManager(new LinearLayoutManager(this));
+        mServerCardBeans = new ArrayList<>();
+        mServerCardAdapter = new ServerCardAdapter(mServerCardBeans);
+        mServerCardAdapter.registerItemClickID();
+        mServerCardAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             if (view.getId() == R.id.cardServer) {
                 ServerCardBean serverCardBean = (ServerCardBean) adapter.getItem(position);
-                Intent serverActivityIntent = new Intent(context, ServerActivity.class);
+                Intent serverActivityIntent = new Intent(mContext, ServerActivity.class);
                 serverActivityIntent.putExtra("serverId", serverCardBean.getServerId());
                 startActivity(serverActivityIntent);
             }
         });
-        binding.listConditionServerList.setAdapter(serverCardAdapter);
+        mBinding.listConditionServerList.setAdapter(mServerCardAdapter);
 
         //注册后台服务进程异常广播
-        serverUpdatedReceiver = new ServerUpdatedReceiver();
+        mServerUpdatedReceiver = new ServerUpdatedReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        mContext.registerReceiver(mServerUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
         new Thread(new GetServerUpdatedStatus()).start();
     }
 
@@ -140,12 +140,12 @@ public class ConditionServerListActivity extends AppCompatActivity {
             //获取全部服务器最新状态数据
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
             List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
-            serverCardBeans.clear();
+            mServerCardBeans.clear();
             //获取负载阈值
-            double systemLoad = Double.parseDouble(sharedPreferences.getString("system_load_threshold", "1.0"));
-            double cpuLoad = Double.parseDouble(sharedPreferences.getString("cpu_alert_threshold", "0.75"));
-            double memoryLoad = Double.parseDouble(sharedPreferences.getString("memory_alert_threshold", "0.75"));
-            double diskLoad = Double.parseDouble(sharedPreferences.getString("disk_alert_threshold", "0.75"));
+            double systemLoad = Double.parseDouble(mSharedPreferences.getString("system_load_threshold", "1.0"));
+            double cpuLoad = Double.parseDouble(mSharedPreferences.getString("cpu_alert_threshold", "0.75"));
+            double memoryLoad = Double.parseDouble(mSharedPreferences.getString("memory_alert_threshold", "0.75"));
+            double diskLoad = Double.parseDouble(mSharedPreferences.getString("disk_alert_threshold", "0.75"));
             //根据不同筛选条件进行分类
             List<ServerCardBean> normalServerCardBeans = new ArrayList<>();
             List<ServerCardBean> offlineServerCardBeans = new ArrayList<>();
@@ -203,23 +203,23 @@ public class ConditionServerListActivity extends AppCompatActivity {
 
             }
             //根据筛选条件分类设置适配据数据
-            if (type == Constants.CardFlag.NORMAL.ordinal()) {
-                serverCardBeans.addAll(normalServerCardBeans);
-            } else if (type == Constants.CardFlag.OFFLINE.ordinal()) {
-                serverCardBeans.addAll(offlineServerCardBeans);
-            } else if (type == Constants.CardFlag.OVERLOAD.ordinal()) {
-                serverCardBeans.addAll(overloadServerCardBeans);
-            } else if (type == Constants.CardFlag.CPU_OVERLOAD.ordinal()) {
-                serverCardBeans.addAll(cpuOverloadServerCardBeans);
-            } else if (type == Constants.CardFlag.MEMORY_OVERLOAD.ordinal()) {
-                serverCardBeans.addAll(memoryOverloadCardBeans);
-            } else if (type == Constants.CardFlag.DISK_OVERLOAD.ordinal()) {
-                serverCardBeans.addAll(diskOverloadServerCardBeans);
+            if (mType == Constants.CardFlag.NORMAL.ordinal()) {
+                mServerCardBeans.addAll(normalServerCardBeans);
+            } else if (mType == Constants.CardFlag.OFFLINE.ordinal()) {
+                mServerCardBeans.addAll(offlineServerCardBeans);
+            } else if (mType == Constants.CardFlag.OVERLOAD.ordinal()) {
+                mServerCardBeans.addAll(overloadServerCardBeans);
+            } else if (mType == Constants.CardFlag.CPU_OVERLOAD.ordinal()) {
+                mServerCardBeans.addAll(cpuOverloadServerCardBeans);
+            } else if (mType == Constants.CardFlag.MEMORY_OVERLOAD.ordinal()) {
+                mServerCardBeans.addAll(memoryOverloadCardBeans);
+            } else if (mType == Constants.CardFlag.DISK_OVERLOAD.ordinal()) {
+                mServerCardBeans.addAll(diskOverloadServerCardBeans);
             }
             //发送消息
             Message msg = new Message();
-            msg.what = messageUpdateFlag;
-            serverListFragmentHandler.sendMessage(msg);
+            msg.what = MESSAGE_UPDATED_FLAG;
+            mServerListFragmentHandler.sendMessage(msg);
         }
     }
 
@@ -239,13 +239,13 @@ public class ConditionServerListActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == messageUpdateFlag) {
+            if (msg.what == MESSAGE_UPDATED_FLAG) {
                 //当收到数据更新消息时更新数据
-                serverCardAdapter.notifyDataSetChanged();
-                if (serverCardBeans.size()==0){
-                    binding.noConditionServerAlert.setVisibility(View.VISIBLE);
+                mServerCardAdapter.notifyDataSetChanged();
+                if (mServerCardBeans.size()==0){
+                    mBinding.noConditionServerAlert.setVisibility(View.VISIBLE);
                 }else{
-                    binding.noConditionServerAlert.setVisibility(View.GONE);
+                    mBinding.noConditionServerAlert.setVisibility(View.GONE);
                 }
             }
         }
@@ -278,6 +278,6 @@ public class ConditionServerListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //解除广播接收器注册
-        unregisterReceiver(serverUpdatedReceiver);
+        unregisterReceiver(mServerUpdatedReceiver);
     }
 }

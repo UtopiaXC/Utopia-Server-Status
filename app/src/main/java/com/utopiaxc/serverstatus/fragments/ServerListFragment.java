@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,12 +15,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.utopiaxc.serverstatus.Beans.LicensesBean;
 import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.activities.ServerActivity;
@@ -45,13 +39,13 @@ import java.util.List;
  */
 public class ServerListFragment extends Fragment {
 
-    private FragmentServerListBinding binding;
-    protected Context context;
-    protected List<ServerCardBean> serverCardBeans;
-    private final int messageUpdateFlag = 213465124;
-    protected ServerCardAdapter serverCardAdapter;
-    protected ServerUpdatedReceiver serverUpdatedReceiver;
-    protected ServerListFragmentHandler serverListFragmentHandler;
+    private FragmentServerListBinding mBinding;
+    protected Context mContext;
+    protected List<ServerCardBean> mServerCardBeans;
+    private final int MESSAGE_UPDATE_FLAG = 213465124;
+    protected ServerCardAdapter mServerCardAdapter;
+    protected ServerUpdatedReceiver mServerUpdatedReceiver;
+    protected ServerListFragmentHandler mServerListFragmentHandler;
 
     /**
      * 服务器列表Fragment视图创建
@@ -65,30 +59,30 @@ public class ServerListFragment extends Fragment {
      */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentServerListBinding.inflate(inflater, container, false);
-        context = requireContext();
-        serverListFragmentHandler = new ServerListFragmentHandler(context.getMainLooper());
-        binding.listServerList.setLayoutManager(new LinearLayoutManager(requireContext()));
-        serverCardBeans = new ArrayList<>();
-        serverCardAdapter = new ServerCardAdapter(serverCardBeans);
-        serverCardAdapter.registerItemClickID();
-        serverCardAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        mBinding = FragmentServerListBinding.inflate(inflater, container, false);
+        mContext = requireContext();
+        mServerListFragmentHandler = new ServerListFragmentHandler(mContext.getMainLooper());
+        mBinding.listServerList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mServerCardBeans = new ArrayList<>();
+        mServerCardAdapter = new ServerCardAdapter(mServerCardBeans);
+        mServerCardAdapter.registerItemClickID();
+        mServerCardAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             if (view.getId() == R.id.cardServer) {
                 ServerCardBean serverCardBean = (ServerCardBean) adapter.getItem(position);
-                Intent intent = new Intent(context, ServerActivity.class);
+                Intent intent = new Intent(mContext, ServerActivity.class);
                 intent.putExtra("serverId", serverCardBean.getServerId());
                 startActivity(intent);
             }
         });
-        binding.listServerList.setAdapter(serverCardAdapter);
+        mBinding.listServerList.setAdapter(mServerCardAdapter);
 
         //注册后台服务进程异常广播
-        serverUpdatedReceiver = new ServerUpdatedReceiver();
+        mServerUpdatedReceiver = new ServerUpdatedReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        mContext.registerReceiver(mServerUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
         new Thread(new GetServerUpdatedStatus()).start();
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     /**
@@ -100,8 +94,8 @@ public class ServerListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
-        context.unregisterReceiver(serverUpdatedReceiver);
+        mBinding = null;
+        mContext.unregisterReceiver(mServerUpdatedReceiver);
     }
 
     /**
@@ -140,7 +134,7 @@ public class ServerListFragment extends Fragment {
             //查询全部服务器的最新状态
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
             List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
-            serverCardBeans.clear();
+            mServerCardBeans.clear();
             for (StatusBean statusBean : statusBeans) {
                 //将服务器名进行映射
                 ServerCardBean serverCardBean = new ServerCardBean();
@@ -158,12 +152,12 @@ public class ServerListFragment extends Fragment {
                 }
                 serverCardBean.setServerLoadProcess(statusBean.getServerLoad());
                 serverCardBean.setRegionFlag(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
-                serverCardBeans.add(serverCardBean);
+                mServerCardBeans.add(serverCardBean);
             }
             //发送消息
             Message msg = new Message();
-            msg.what = messageUpdateFlag;
-            serverListFragmentHandler.sendMessage(msg);
+            msg.what = MESSAGE_UPDATE_FLAG;
+            mServerListFragmentHandler.sendMessage(msg);
         }
     }
 
@@ -183,12 +177,12 @@ public class ServerListFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             //当收到数据更新消息时调用适配器更新
-            if (msg.what == messageUpdateFlag) {
-                serverCardAdapter.notifyDataSetChanged();
-                if (serverCardBeans.size() == 0) {
-                    binding.noServerAlert.setVisibility(View.VISIBLE);
+            if (msg.what == MESSAGE_UPDATE_FLAG) {
+                mServerCardAdapter.notifyDataSetChanged();
+                if (mServerCardBeans.size() == 0) {
+                    mBinding.noServerAlert.setVisibility(View.VISIBLE);
                 } else {
-                    binding.noServerAlert.setVisibility(View.GONE);
+                    mBinding.noServerAlert.setVisibility(View.GONE);
                 }
             }
         }

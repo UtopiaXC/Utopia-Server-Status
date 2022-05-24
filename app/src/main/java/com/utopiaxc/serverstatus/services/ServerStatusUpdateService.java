@@ -44,20 +44,20 @@ import java.util.Random;
  * @since 2022-05-22 22:24:31
  */
 public class ServerStatusUpdateService extends Service {
-    private ServerStatusUpdateBinder binder;
+    private ServerStatusUpdateBinder mBinder;
     private Context mContext;
-    private NotificationManager notificationManager;
+    private NotificationManager mNotificationManager;
     private final String NOTIFICATION_CHANNEL_ID = "USS_BACKGROUND_NOTIFICATION";
     private final String NOTIFICATION_STATUS_CHANNEL_ID = "USS_SERVER_STATUS_ALERT_NOTIFICATION";
     private final int NOTIFICATION_ID = 154651133;
-    private Thread updateThread;
-    private ServerUpdateErrorReceiver serverUpdateErrorReceiver;
+    private Thread mUpdateThread;
+    private ServerUpdateErrorReceiver mServerUpdateErrorReceiver;
 
-    private final int messageUpdateFlag = 56496188;
-    protected ServerUpdatedReceiver serverUpdatedReceiver;
-    protected ServerListFragmentHandler serverListFragmentHandler;
-    private final List<NotificationBean> notificationBeans = new ArrayList<>();
-    private SharedPreferences sharedPreferences;
+    private final int MESSAGE_UPDATED_FLAG = 56496188;
+    protected ServerUpdatedReceiver mServerUpdatedReceiver;
+    protected ServerListFragmentHandler mServerListFragmentHandler;
+    private final List<NotificationBean> mNotificationBeans = new ArrayList<>();
+    private SharedPreferences mSharedPreferences;
 
     /**
      * 服务入口
@@ -70,38 +70,38 @@ public class ServerStatusUpdateService extends Service {
     public void onCreate() {
         super.onCreate();
         //创建进程间通信
-        binder = new ServerStatusUpdateBinder();
+        mBinder = new ServerStatusUpdateBinder();
         mContext = this;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        serverListFragmentHandler = new ServerListFragmentHandler(mContext.getMainLooper());
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mServerListFragmentHandler = new ServerListFragmentHandler(mContext.getMainLooper());
 
         //后台常驻通知
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, mContext.getString(R.string.background_notification_title), NotificationManager.IMPORTANCE_MIN);
-            notificationManager.createNotificationChannel(channel);
+            mNotificationManager.createNotificationChannel(channel);
             channel = new NotificationChannel(NOTIFICATION_STATUS_CHANNEL_ID, mContext.getString(R.string.server_alert_notification), NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
+            mNotificationManager.createNotificationChannel(channel);
         }
         startForeground(NOTIFICATION_ID, getNotification());
 
         //当允许后台服务时启动更新线程
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (sharedPreferences.getBoolean("backgroundService", true)) {
-            updateThread = new Thread(new UpdateStatus(mContext));
-            updateThread.start();
+            mUpdateThread = new Thread(new UpdateStatus(mContext));
+            mUpdateThread.start();
         }
 
         //注册后台服务进程异常广播
-        serverUpdateErrorReceiver = new ServerUpdateErrorReceiver();
+        mServerUpdateErrorReceiver = new ServerUpdateErrorReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATE_ERROR");
-        mContext.registerReceiver(serverUpdateErrorReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        mContext.registerReceiver(mServerUpdateErrorReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
 
         //注册服务器状态更新完成广播
-        serverUpdatedReceiver = new ServerUpdatedReceiver();
+        mServerUpdatedReceiver = new ServerUpdatedReceiver();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        mContext.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        mContext.registerReceiver(mServerUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
     }
 
     /**
@@ -140,7 +140,7 @@ public class ServerStatusUpdateService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        return binder;
+        return mBinder;
     }
 
     /**
@@ -174,12 +174,12 @@ public class ServerStatusUpdateService extends Service {
     public void onDestroy() {
         super.onDestroy();
         //回收更新线程
-        updateThread.interrupt();
+        mUpdateThread.interrupt();
         //回收后台通知
-        notificationManager.cancel(NOTIFICATION_ID);
+        mNotificationManager.cancel(NOTIFICATION_ID);
         //回收广播监听器
-        mContext.unregisterReceiver(serverUpdateErrorReceiver);
-        mContext.unregisterReceiver(serverUpdatedReceiver);
+        mContext.unregisterReceiver(mServerUpdateErrorReceiver);
+        mContext.unregisterReceiver(mServerUpdatedReceiver);
     }
 
     /**
@@ -240,22 +240,22 @@ public class ServerStatusUpdateService extends Service {
 
         @Override
         public void run() {
-            notificationBeans.clear();
+            mNotificationBeans.clear();
             //查询全部服务器的最新状态
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
             List<ServerBean> serverBeans = Variables.database.serverDao().getAll();
-            double systemLoad = Double.parseDouble(sharedPreferences.getString("system_load_threshold", "1.0"));
-            double cpuLoad = Double.parseDouble(sharedPreferences.getString("cpu_alert_threshold", "0.75"));
-            double memoryLoad = Double.parseDouble(sharedPreferences.getString("memory_alert_threshold", "0.75"));
-            double diskLoad = Double.parseDouble(sharedPreferences.getString("disk_alert_threshold", "0.75"));
-            boolean backgroundService = sharedPreferences.getBoolean("backgroundService", true);
-            boolean enableAlert = sharedPreferences.getBoolean("alert_notification", false);
-            boolean enableServerOffline = sharedPreferences.getBoolean("server_offline", false);
-            boolean enableServerOverload = sharedPreferences.getBoolean("system_load", false);
-            boolean enableCpuOverload = sharedPreferences.getBoolean("cpu_alert", false);
-            boolean enableMemoryOverload = sharedPreferences.getBoolean("memory_alert", false);
-            boolean enableDiskOverload = sharedPreferences.getBoolean("disk_alert", false);
-            int alertInterval = Integer.parseInt(sharedPreferences.getString("same_overload_alert_interval", "5"));
+            double systemLoad = Double.parseDouble(mSharedPreferences.getString("system_load_threshold", "1.0"));
+            double cpuLoad = Double.parseDouble(mSharedPreferences.getString("cpu_alert_threshold", "0.75"));
+            double memoryLoad = Double.parseDouble(mSharedPreferences.getString("memory_alert_threshold", "0.75"));
+            double diskLoad = Double.parseDouble(mSharedPreferences.getString("disk_alert_threshold", "0.75"));
+            boolean backgroundService = mSharedPreferences.getBoolean("backgroundService", true);
+            boolean enableAlert = mSharedPreferences.getBoolean("alert_notification", false);
+            boolean enableServerOffline = mSharedPreferences.getBoolean("server_offline", false);
+            boolean enableServerOverload = mSharedPreferences.getBoolean("system_load", false);
+            boolean enableCpuOverload = mSharedPreferences.getBoolean("cpu_alert", false);
+            boolean enableMemoryOverload = mSharedPreferences.getBoolean("memory_alert", false);
+            boolean enableDiskOverload = mSharedPreferences.getBoolean("disk_alert", false);
+            int alertInterval = Integer.parseInt(mSharedPreferences.getString("same_overload_alert_interval", "5"));
             int timestampNow = (int) (new Date().getTime() / 1000);
             int triggerTimestamp = timestampNow - (alertInterval * 60);
             if (!enableAlert || !backgroundService) {
@@ -283,7 +283,7 @@ public class ServerStatusUpdateService extends Service {
                         notificationBean.setServerName(serverName);
                         notificationBean.setAlertTimestamp(timestampNow);
                         notificationBean.setAlertType(Constants.CardFlag.OVERLOAD.ordinal());
-                        notificationBeans.add(notificationBean);
+                        mNotificationBeans.add(notificationBean);
                     }
                     if (statusBean.getServerCpuPercent() != null
                             && statusBean.getServerCpuPercent() > cpuLoad
@@ -297,7 +297,7 @@ public class ServerStatusUpdateService extends Service {
                         notificationBean.setServerName(serverName);
                         notificationBean.setAlertTimestamp(timestampNow);
                         notificationBean.setAlertType(Constants.CardFlag.CPU_OVERLOAD.ordinal());
-                        notificationBeans.add(notificationBean);
+                        mNotificationBeans.add(notificationBean);
                     }
                     if (statusBean.getServerMemoryPercent() != null
                             && statusBean.getServerMemoryPercent() > memoryLoad
@@ -311,7 +311,7 @@ public class ServerStatusUpdateService extends Service {
                         notificationBean.setServerName(serverName);
                         notificationBean.setAlertTimestamp(timestampNow);
                         notificationBean.setAlertType(Constants.CardFlag.MEMORY_OVERLOAD.ordinal());
-                        notificationBeans.add(notificationBean);
+                        mNotificationBeans.add(notificationBean);
                     }
                     if (statusBean.getServerDiskPercent() != null
                             && statusBean.getServerDiskPercent() > diskLoad
@@ -325,7 +325,7 @@ public class ServerStatusUpdateService extends Service {
                         notificationBean.setServerName(serverName);
                         notificationBean.setAlertTimestamp(timestampNow);
                         notificationBean.setAlertType(Constants.CardFlag.DISK_OVERLOAD.ordinal());
-                        notificationBeans.add(notificationBean);
+                        mNotificationBeans.add(notificationBean);
                     }
                 } else {
                     if (enableServerOffline
@@ -337,15 +337,15 @@ public class ServerStatusUpdateService extends Service {
                         notificationBean.setServerName(serverName);
                         notificationBean.setAlertTimestamp(timestampNow);
                         notificationBean.setAlertType(Constants.CardFlag.OFFLINE.ordinal());
-                        notificationBeans.add(notificationBean);
+                        mNotificationBeans.add(notificationBean);
                     }
                 }
             }
-            Variables.database.notificationDao().insertAll(notificationBeans.toArray(new NotificationBean[0]));
+            Variables.database.notificationDao().insertAll(mNotificationBeans.toArray(new NotificationBean[0]));
             //发送消息
             Message msg = new Message();
-            msg.what = messageUpdateFlag;
-            serverListFragmentHandler.sendMessage(msg);
+            msg.what = MESSAGE_UPDATED_FLAG;
+            mServerListFragmentHandler.sendMessage(msg);
         }
     }
 
@@ -364,8 +364,8 @@ public class ServerStatusUpdateService extends Service {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == messageUpdateFlag) {
-                for (NotificationBean notificationBean : notificationBeans) {
+            if (msg.what == MESSAGE_UPDATED_FLAG) {
+                for (NotificationBean notificationBean : mNotificationBeans) {
                     int type = notificationBean.getAlertType();
                     int icon = R.drawable.server_offline;
                     String title = "";
@@ -390,7 +390,7 @@ public class ServerStatusUpdateService extends Service {
                         title = getString(R.string.home_disk_overload);
                         description += getString(R.string.home_disk_overload);
                     }
-                    notificationManager.notify(notificationBean.getNotificationId(), getServerAlertNotification(icon, title, description));
+                    mNotificationManager.notify(notificationBean.getNotificationId(), getServerAlertNotification(icon, title, description));
                 }
             }
         }

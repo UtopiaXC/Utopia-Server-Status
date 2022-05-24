@@ -3,14 +3,11 @@ package com.utopiaxc.serverstatus.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 
@@ -30,7 +27,7 @@ import java.util.UUID;
  * @since 2022-05-22 22:12:51
  */
 public class UpdateStatus implements Runnable {
-    Context context;
+    Context mContext;
 
     /**
      * 数据更新线程构造函数
@@ -41,7 +38,7 @@ public class UpdateStatus implements Runnable {
      * @since 2022-05-22 22:16:04
      */
     public UpdateStatus(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     /**
@@ -57,7 +54,7 @@ public class UpdateStatus implements Runnable {
         //当线程不被打断时一直运行
         while (!Thread.currentThread().isInterrupted()) {
             //从偏好中取得更新间隔与接口地址
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
             int interval = Integer.parseInt(sharedPreferences.getString("interval", "5000"));
             String address = sharedPreferences.getString("address", "");
             try {
@@ -185,7 +182,7 @@ public class UpdateStatus implements Runnable {
                 //完成服务器数据更新后发送广播
                 Intent broadcast = new Intent("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
                 broadcast.putExtra("timestamp", timestamp);
-                context.sendBroadcast(broadcast);
+                mContext.sendBroadcast(broadcast);
                 //休眠间隔
                 Thread.sleep(interval);
             } catch (InterruptedException ie) {
@@ -195,7 +192,7 @@ public class UpdateStatus implements Runnable {
                 //发生其他异常时发送广播
                 e.printStackTrace();
                 Intent broadcast = new Intent("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATE_ERROR");
-                context.sendBroadcast(broadcast);
+                mContext.sendBroadcast(broadcast);
                 return;
             }
         }

@@ -2,7 +2,6 @@ package com.utopiaxc.serverstatus.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,28 +13,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.DocumentsContract;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
@@ -45,16 +38,11 @@ import com.utopiaxc.serverstatus.utils.StorageUtil;
 import com.utopiaxc.serverstatus.utils.ThemeUtil;
 import com.utopiaxc.serverstatus.utils.Variables;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Stack;
 import java.util.UUID;
 
 /**
@@ -64,15 +52,14 @@ import java.util.UUID;
  * @since 2022-05-23 23:30:38
  */
 public class ServerActivity extends AppCompatActivity {
-    private ActivityServerBinding binding;
-    private UUID serverId;
+    private ActivityServerBinding mBinding;
+    private UUID mServerId;
     private final int SERVER_UPDATED = 32161154;
-    private static final int CREATE_FILE = 124521054;
-    private ServerBean serverBean;
-    private StatusBean statusBean;
-    private List<StatusBean> statusBeans;
-    private ServerUpdatedReceiver serverUpdatedReceiver;
-    private ServerInfoMessageHandler serverInfoMessageHandler;
+    private ServerBean mServerBean;
+    private StatusBean mStatusBean;
+    private List<StatusBean> mStatusBeans;
+    private ServerUpdatedReceiver mServerUpdatedReceiver;
+    private ServerInfoMessageHandler mServerInfoMessageHandler;
 
     /**
      * Activity创建方法
@@ -85,28 +72,32 @@ public class ServerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityServerBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        mBinding = ActivityServerBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
         Context context = this;
-        serverInfoMessageHandler = new ServerInfoMessageHandler(getMainLooper());
+        mServerInfoMessageHandler = new ServerInfoMessageHandler(getMainLooper());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        serverId = (UUID) getIntent().getExtras().get("serverId");
+        mServerId = (UUID) getIntent().getExtras().get("serverId");
         new Thread(new ServerInfo()).start();
+
         //注册后台服务进程异常广播
-        serverUpdatedReceiver = new ServerUpdatedReceiver();
+        mServerUpdatedReceiver = new ServerUpdatedReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
-        setChartOptions(getString(R.string.cpu_load), binding.cpuChart);
-        setChartOptions(getString(R.string.memory_load), binding.memoryChart);
-        setChartOptions(getString(R.string.download), binding.downChart);
-        setChartOptions(getString(R.string.upload), binding.upChart);
+        context.registerReceiver(mServerUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+
+        //初始化图表
+        setChartOptions(getString(R.string.cpu_load), mBinding.cpuChart);
+        setChartOptions(getString(R.string.memory_load), mBinding.memoryChart);
+        setChartOptions(getString(R.string.download), mBinding.downChart);
+        setChartOptions(getString(R.string.upload), mBinding.upChart);
+
         //保存按钮。调用系统默认选择器选择保存路径获取Uri
-        binding.buttonExportServerData.setOnClickListener(view -> {
+        mBinding.buttonExportServerData.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("**/csv");
-            intent.putExtra(Intent.EXTRA_TITLE, serverBean.getServerName() + ".csv");
+            intent.putExtra(Intent.EXTRA_TITLE, mServerBean.getServerName() + ".csv");
             fileStorageResult.launch(intent);
         });
     }
@@ -125,13 +116,32 @@ public class ServerActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * 文件导出保存线程
+     *
+     * @author UtopiaXC
+     * @since 2022-05-25 00:04:11
+     */
     class StatusSaveFile implements Runnable {
         private final Uri uri;
 
+        /**
+         * 初始化文件保存线程
+         *
+         * @param uri 文件URI
+         * @author UtopiaXC
+         * @since 2022-05-25 00:04:27
+         */
         public StatusSaveFile(Uri uri) {
             this.uri = uri;
         }
 
+        /**
+         * 文件保存方法
+         *
+         * @author UtopiaXC
+         * @since 2022-05-25 00:04:42
+         */
         @Override
         public void run() {
             //通过Uri打开文件并保存
@@ -140,8 +150,9 @@ public class ServerActivity extends AppCompatActivity {
                 List<StatusBean> status = Variables.database.statusDao().getAll();
                 String content = getString(R.string.export_report_header);
                 outputStream.write(content.getBytes());
+                //遍历全部状态并保存
                 for (StatusBean statusBean : status) {
-                    content = serverBean.getServerName()
+                    content = mServerBean.getServerName()
                             + "," + statusBean.getServerType()
                             + "," + statusBean.getServerLocation()
                             + "," + statusBean.getServerRegion()
@@ -195,7 +206,7 @@ public class ServerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(serverUpdatedReceiver);
+        unregisterReceiver(mServerUpdatedReceiver);
     }
 
     /**
@@ -220,127 +231,170 @@ public class ServerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 服务器信息更新线程
+     *
+     * @author UtopiaXC
+     * @since 2022-05-25 00:05:12
+     */
     class ServerInfo implements Runnable {
+        /**
+         * 对服务器信息进行更新
+         *
+         * @author UtopiaXC
+         * @since 2022-05-25 00:05:23
+         */
         @Override
         public void run() {
-            serverBean = Variables.database.serverDao().getById(serverId);
-            statusBean = Variables.database.statusDao().getNewestStatusByServerId(serverId);
-            statusBeans = Variables.database.statusDao().getDataForChartByServerId(serverId);
+            mServerBean = Variables.database.serverDao().getById(mServerId);
+            mStatusBean = Variables.database.statusDao().getNewestStatusByServerId(mServerId);
+            mStatusBeans = Variables.database.statusDao().getDataForChartByServerId(mServerId);
             Message message = new Message();
             message.what = SERVER_UPDATED;
-            serverInfoMessageHandler.sendMessage(message);
+            mServerInfoMessageHandler.sendMessage(message);
         }
     }
 
+    /**
+     * 服务器消息更新句柄
+     *
+     * @author UtopiaXC
+     * @since 2022-05-25 00:05:43
+     */
     class ServerInfoMessageHandler extends Handler {
 
+        /**
+         * 初始化句柄
+         *
+         * @param looper 循环
+         * @author UtopiaXC
+         * @since 2022-05-25 00:05:56
+         */
         public ServerInfoMessageHandler(@NonNull Looper looper) {
             super(looper);
         }
 
+        /**
+         * 消息处理
+         *
+         * @param msg 消息
+         * @author UtopiaXC
+         * @since 2022-05-25 00:06:10
+         */
         @SuppressLint("SetTextI18n")
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == SERVER_UPDATED) {
-                binding.serverInfoServerName.setText(serverBean.getServerName());
-                binding.serverInfoRegionFlag.setImageResource(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
-                binding.serverInfoServerType.setText(statusBean.getServerType() + " " + statusBean.getServerLocation());
-                if (statusBean.getServerIpv4Status() || statusBean.getServerIpv6Status()) {
-                    binding.serverDetailInfo.setVisibility(View.VISIBLE);
-                    Double systemLoad = statusBean.getServerLoad();
-                    Double cpuLoad = statusBean.getServerCpuPercent();
-                    Double memoryLoad = statusBean.getServerMemoryPercent();
-                    Double diskLoad = statusBean.getServerDiskPercent();
+                //设置服务器基本信息
+                mBinding.serverInfoServerName.setText(mServerBean.getServerName());
+                mBinding.serverInfoRegionFlag.setImageResource(Constants.RegionFlagEnum.getByKey(mStatusBean.getServerRegion()).getSourceId());
+                mBinding.serverInfoServerType.setText(mStatusBean.getServerType() + " " + mStatusBean.getServerLocation());
+                //设置当服务器在线时的信息
+                if (mStatusBean.getServerIpv4Status() || mStatusBean.getServerIpv6Status()) {
+                    mBinding.serverDetailInfo.setVisibility(View.VISIBLE);
+                    Double systemLoad = mStatusBean.getServerLoad();
+                    Double cpuLoad = mStatusBean.getServerCpuPercent();
+                    Double memoryLoad = mStatusBean.getServerMemoryPercent();
+                    Double diskLoad = mStatusBean.getServerDiskPercent();
+                    //设置负载图表与文字
                     if (systemLoad != null) {
-                        binding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + systemLoad);
+                        mBinding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + systemLoad);
                         if (systemLoad >= 1) {
-                            binding.serverInfoProgressLoad.setProgress(100);
+                            mBinding.serverInfoProgressLoad.setProgress(100);
                         } else {
-                            binding.serverInfoProgressLoad.setProgress((int) (systemLoad * 100));
+                            mBinding.serverInfoProgressLoad.setProgress((int) (systemLoad * 100));
                         }
                     }
+                    //设置CPU负载图表与文字
                     if (cpuLoad != null) {
-                        binding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + (int) (cpuLoad * 100) + "%");
-                        binding.serverInfoProgressCpuLoad.setProgress((int) (cpuLoad * 100));
+                        mBinding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + (int) (cpuLoad * 100) + "%");
+                        mBinding.serverInfoProgressCpuLoad.setProgress((int) (cpuLoad * 100));
                     }
+                    //设置内存负载图表与文字
                     if (memoryLoad != null) {
-                        binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + (int) (memoryLoad * 100) + "%");
-                        binding.serverInfoProgressMemoryLoad.setProgress((int) (memoryLoad * 100));
-                        binding.progressMemoryUsed.setProgress(memoryLoad.floatValue());
-                        if (statusBean.getServerMemoryTotal() != null) {
-                            binding.memoryTotal.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryTotal()) + " " + getString(R.string.total));
+                        mBinding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + (int) (memoryLoad * 100) + "%");
+                        mBinding.serverInfoProgressMemoryLoad.setProgress((int) (memoryLoad * 100));
+                        mBinding.progressMemoryUsed.setProgress(memoryLoad.floatValue());
+                        if (mStatusBean.getServerMemoryTotal() != null) {
+                            mBinding.memoryTotal.setText(StorageUtil.formatKbToString(mStatusBean.getServerMemoryTotal()) + " " + getString(R.string.total));
                         }
-                        if (statusBean.getServerMemoryUsed() != null) {
-                            binding.memoryUsed.setText(StorageUtil.formatKbToString(statusBean.getServerMemoryUsed()) + " " + getString(R.string.used));
+                        if (mStatusBean.getServerMemoryUsed() != null) {
+                            mBinding.memoryUsed.setText(StorageUtil.formatKbToString(mStatusBean.getServerMemoryUsed()) + " " + getString(R.string.used));
                         }
                     }
+                    //设置硬盘负载图表与文字
                     if (diskLoad != null) {
-                        binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + (int) (diskLoad * 100) + "%");
-                        binding.serverInfoDiskProgressLoad.setProgress((int) (diskLoad * 100));
-                        binding.progressDiskUsed.setProgress(diskLoad.floatValue());
-                        if (statusBean.getServerDiskTotal() != null) {
-                            binding.diskTotal.setText(StorageUtil.formatMbToString(statusBean.getServerDiskTotal()) + " " + getString(R.string.total));
+                        mBinding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + (int) (diskLoad * 100) + "%");
+                        mBinding.serverInfoDiskProgressLoad.setProgress((int) (diskLoad * 100));
+                        mBinding.progressDiskUsed.setProgress(diskLoad.floatValue());
+                        if (mStatusBean.getServerDiskTotal() != null) {
+                            mBinding.diskTotal.setText(StorageUtil.formatMbToString(mStatusBean.getServerDiskTotal()) + " " + getString(R.string.total));
                         }
-                        if (statusBean.getServerDiskUsed() != null) {
-                            binding.diskUsed.setText(StorageUtil.formatMbToString(statusBean.getServerDiskUsed()) + " " + getString(R.string.used));
+                        if (mStatusBean.getServerDiskUsed() != null) {
+                            mBinding.diskUsed.setText(StorageUtil.formatMbToString(mStatusBean.getServerDiskUsed()) + " " + getString(R.string.used));
                         }
                     }
-                    if (statusBean.getServerSwapPercent() != null) {
-                        binding.progressSwapUsed.setProgress(statusBean.getServerSwapPercent().floatValue());
+                    //设置交换分区负载图表与文字
+                    if (mStatusBean.getServerSwapPercent() != null) {
+                        mBinding.progressSwapUsed.setProgress(mStatusBean.getServerSwapPercent().floatValue());
                     } else {
-                        binding.progressSwapUsed.setProgress(0);
+                        mBinding.progressSwapUsed.setProgress(0);
                     }
-                    if (statusBean.getServerSwapTotal() != null) {
-                        binding.swapTotal.setText(StorageUtil.formatKbToString(statusBean.getServerSwapTotal()) + " " + getString(R.string.total));
+                    if (mStatusBean.getServerSwapTotal() != null) {
+                        mBinding.swapTotal.setText(StorageUtil.formatKbToString(mStatusBean.getServerSwapTotal()) + " " + getString(R.string.total));
                     }
-                    if (statusBean.getServerSwapUsed() != null) {
-                        binding.swapUsed.setText(StorageUtil.formatKbToString(statusBean.getServerSwapUsed()) + " " + getString(R.string.used));
+                    if (mStatusBean.getServerSwapUsed() != null) {
+                        mBinding.swapUsed.setText(StorageUtil.formatKbToString(mStatusBean.getServerSwapUsed()) + " " + getString(R.string.used));
                     }
-                    if (statusBean.getServerNetworkRealtimeDownloadSpeed() != null
-                            && statusBean.getServerNetworkIn() != null) {
-                        binding.networkDown.setText(
-                                StorageUtil.formatByteSpeedToString(statusBean.getServerNetworkRealtimeDownloadSpeed())
+                    //设置网络卡片
+                    if (mStatusBean.getServerNetworkRealtimeDownloadSpeed() != null
+                            && mStatusBean.getServerNetworkIn() != null) {
+                        mBinding.networkDown.setText(
+                                StorageUtil.formatByteSpeedToString(mStatusBean.getServerNetworkRealtimeDownloadSpeed())
                                         + " "
                                         + getString(R.string.realtime)
                                         + " "
-                                        + StorageUtil.formatByteToString(statusBean.getServerNetworkIn())
+                                        + StorageUtil.formatByteToString(mStatusBean.getServerNetworkIn())
                                         + " "
                                         + getString(R.string.total)
                         );
                     }
-                    if (statusBean.getServerNetworkRealtimeUploadSpeed() != null
-                            && statusBean.getServerNetworkOut() != null) {
-                        binding.networkUp.setText(
-                                StorageUtil.formatByteSpeedToString(statusBean.getServerNetworkRealtimeUploadSpeed())
+                    if (mStatusBean.getServerNetworkRealtimeUploadSpeed() != null
+                            && mStatusBean.getServerNetworkOut() != null) {
+                        mBinding.networkUp.setText(
+                                StorageUtil.formatByteSpeedToString(mStatusBean.getServerNetworkRealtimeUploadSpeed())
                                         + " "
                                         + getString(R.string.realtime)
                                         + " "
-                                        + StorageUtil.formatByteToString(statusBean.getServerNetworkOut())
+                                        + StorageUtil.formatByteToString(mStatusBean.getServerNetworkOut())
                                         + " "
                                         + getString(R.string.total)
                         );
                     }
-                    if (statusBean.getServerUptime()!=null){
-                        binding.serverInfoUptime.setText(getString(R.string.uptime) + " " + statusBean.getServerUptime());
+                    //在线时间
+                    if (mStatusBean.getServerUptime() != null) {
+                        mBinding.serverInfoUptime.setText(getString(R.string.uptime) + " " + mStatusBean.getServerUptime());
                     }
                 } else {
-                    binding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + getString(R.string.server_offline));
-                    binding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + getString(R.string.server_offline));
-                    binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + getString(R.string.server_offline));
-                    binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + getString(R.string.server_offline));
-                    binding.serverInfoUptime.setText(getString(R.string.uptime) + " " + getString(R.string.server_offline));
-                    binding.serverDetailInfo.setVisibility(View.GONE);
+                    //离线状态
+                    mBinding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + getString(R.string.server_offline));
+                    mBinding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + getString(R.string.server_offline));
+                    mBinding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + getString(R.string.server_offline));
+                    mBinding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + getString(R.string.server_offline));
+                    mBinding.serverInfoUptime.setText(getString(R.string.uptime) + " " + getString(R.string.server_offline));
+                    mBinding.serverDetailInfo.setVisibility(View.GONE);
                 }
 
-                List<StatusBean> statusBeanList = statusBeans;
-
+                //初始化折线表数据
+                List<StatusBean> statusBeanList = mStatusBeans;
                 List<Entry> cpuValues = new ArrayList<>();
                 List<Entry> memoryValues = new ArrayList<>();
                 List<Entry> netUpValues = new ArrayList<>();
                 List<Entry> netDownValues = new ArrayList<>();
                 int flag = 1;
                 Collections.reverse(statusBeanList);
+                //设置折线表数据
                 for (StatusBean statusBean : statusBeanList) {
                     if (statusBean.getServerCpuPercent() != null) {
                         cpuValues.add(new Entry(flag++, statusBean.getServerCpuPercent().floatValue()));
@@ -356,10 +410,12 @@ public class ServerActivity extends AppCompatActivity {
                         netDownValues.add(new Entry(flag++, statusBean.getServerNetworkRealtimeDownloadSpeed().floatValue()));
                     }
                 }
-                setChartDataSetOptions(new LineDataSet(cpuValues, null), binding.cpuChart);
-                setChartDataSetOptions(new LineDataSet(memoryValues, null), binding.memoryChart);
-                setChartDataSetOptions(new LineDataSet(netUpValues, null), binding.upChart);
-                setChartDataSetOptions(new LineDataSet(netDownValues, null), binding.downChart);
+
+                //设置折线表数据样式
+                setChartDataSetOptions(new LineDataSet(cpuValues, null), mBinding.cpuChart);
+                setChartDataSetOptions(new LineDataSet(memoryValues, null), mBinding.memoryChart);
+                setChartDataSetOptions(new LineDataSet(netUpValues, null), mBinding.upChart);
+                setChartDataSetOptions(new LineDataSet(netDownValues, null), mBinding.downChart);
             }
         }
     }

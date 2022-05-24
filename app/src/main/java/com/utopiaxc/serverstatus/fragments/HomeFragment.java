@@ -13,31 +13,23 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.utopiaxc.serverstatus.Beans.HomePageBean;
-import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.R;
 import com.utopiaxc.serverstatus.activities.ConditionServerListActivity;
-import com.utopiaxc.serverstatus.activities.ServerActivity;
 import com.utopiaxc.serverstatus.adapters.HomePageAdapter;
-import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 import com.utopiaxc.serverstatus.databinding.FragmentHomeBinding;
-import com.utopiaxc.serverstatus.services.ServerStatusUpdateService;
 import com.utopiaxc.serverstatus.utils.Constants;
 import com.utopiaxc.serverstatus.utils.Variables;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.Pair;
 
 /**
  * 主页Fragment
@@ -47,19 +39,19 @@ import kotlin.Pair;
  */
 public class HomeFragment extends Fragment {
 
-    protected FragmentHomeBinding binding;
-    protected ServerUpdatedReceiver serverUpdatedReceiver;
-    protected Context context;
-    protected List<HomePageBean> homePageBeans;
-    private final int messageUpdateFlag = 21315124;
-    private HomeFragmentHandler homeFragmentHandler;
-    private HomePageAdapter homePageAdapter;
-    private int normal = 0;
-    private int offline = 0;
-    private int sysOverload = 0;
-    private int cpuOverload = 0;
-    private int memoryOverload = 0;
-    private int diskOverload = 0;
+    protected FragmentHomeBinding mBinding;
+    protected ServerUpdatedReceiver mServerUpdatedReceiver;
+    protected Context mContext;
+    protected List<HomePageBean> mHomePageBeans;
+    private final int MESSAGE_UPDATED_FLAG = 21315124;
+    private HomeFragmentHandler mHomeFragmentHandler;
+    private HomePageAdapter mHomePageAdapter;
+    private int mNormal = 0;
+    private int mOffline = 0;
+    private int mSysOverload = 0;
+    private int mCpuOverload = 0;
+    private int mMemoryOverload = 0;
+    private int mDiskOverload = 0;
 
 
     /**
@@ -74,37 +66,37 @@ public class HomeFragment extends Fragment {
      */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        context = requireContext();
-        binding.listHome.setLayoutManager(new LinearLayoutManager(requireContext()));
-        homeFragmentHandler = new HomeFragmentHandler(context.getMainLooper());
+        mBinding = FragmentHomeBinding.inflate(inflater, container, false);
+        mContext = requireContext();
+        mBinding.listHome.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mHomeFragmentHandler = new HomeFragmentHandler(mContext.getMainLooper());
         //设置显示列表适配器
-        homePageBeans = new ArrayList<>();
-        homePageBeans.add(Constants.CardFlag.NORMAL.ordinal(), new HomePageBean(Constants.CardFlag.NORMAL.ordinal(), getString(R.string.home_normal), normal, R.drawable.server_normal));
-        homePageBeans.add(Constants.CardFlag.OFFLINE.ordinal(), new HomePageBean(Constants.CardFlag.OFFLINE.ordinal(), getString(R.string.home_offline), offline, R.drawable.server_offline));
-        homePageBeans.add(Constants.CardFlag.OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.OVERLOAD.ordinal(), getString(R.string.home_system_overload), sysOverload, R.drawable.server_overload));
-        homePageBeans.add(Constants.CardFlag.CPU_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.CPU_OVERLOAD.ordinal(), getString(R.string.home_cpu_overload), cpuOverload, R.drawable.cpu));
-        homePageBeans.add(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), getString(R.string.home_memory_overload), memoryOverload, R.drawable.memory));
-        homePageBeans.add(Constants.CardFlag.DISK_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.DISK_OVERLOAD.ordinal(), getString(R.string.home_disk_overload), diskOverload, R.drawable.disk));
-        homePageAdapter = new HomePageAdapter(homePageBeans);
-        homePageAdapter.registerItemClickID();
-        homePageAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        mHomePageBeans = new ArrayList<>();
+        mHomePageBeans.add(Constants.CardFlag.NORMAL.ordinal(), new HomePageBean(Constants.CardFlag.NORMAL.ordinal(), getString(R.string.home_normal), mNormal, R.drawable.server_normal));
+        mHomePageBeans.add(Constants.CardFlag.OFFLINE.ordinal(), new HomePageBean(Constants.CardFlag.OFFLINE.ordinal(), getString(R.string.home_offline), mOffline, R.drawable.server_offline));
+        mHomePageBeans.add(Constants.CardFlag.OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.OVERLOAD.ordinal(), getString(R.string.home_system_overload), mSysOverload, R.drawable.server_overload));
+        mHomePageBeans.add(Constants.CardFlag.CPU_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.CPU_OVERLOAD.ordinal(), getString(R.string.home_cpu_overload), mCpuOverload, R.drawable.cpu));
+        mHomePageBeans.add(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.MEMORY_OVERLOAD.ordinal(), getString(R.string.home_memory_overload), mMemoryOverload, R.drawable.memory));
+        mHomePageBeans.add(Constants.CardFlag.DISK_OVERLOAD.ordinal(), new HomePageBean(Constants.CardFlag.DISK_OVERLOAD.ordinal(), getString(R.string.home_disk_overload), mDiskOverload, R.drawable.disk));
+        mHomePageAdapter = new HomePageAdapter(mHomePageBeans);
+        mHomePageAdapter.registerItemClickID();
+        mHomePageAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             if (view.getId() == R.id.cardHomePage) {
                 HomePageBean homePageBean = (HomePageBean) adapter.getItem(position);
-                Intent intent = new Intent(context, ConditionServerListActivity.class);
+                Intent intent = new Intent(mContext, ConditionServerListActivity.class);
                 intent.putExtra("type", homePageBean.getCardId());
                 startActivity(intent);
             }
         });
-        binding.listHome.setAdapter(homePageAdapter);
+        mBinding.listHome.setAdapter(mHomePageAdapter);
 
         //注册后台服务进程异常广播
-        serverUpdatedReceiver = new ServerUpdatedReceiver();
+        mServerUpdatedReceiver = new ServerUpdatedReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-        context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
+        mContext.registerReceiver(mServerUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
         new Thread(new GetServerUpdatedStatus()).start();
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     /**
@@ -116,8 +108,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
-        context.unregisterReceiver(serverUpdatedReceiver);
+        mBinding = null;
+        mContext.unregisterReceiver(mServerUpdatedReceiver);
     }
 
     /**
@@ -154,14 +146,14 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
             //获取负载阈值
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
             List<StatusBean> statusBeans = Variables.database.statusDao().getNewestStatus();
-            normal = 0;
-            offline = 0;
-            sysOverload = 0;
-            cpuOverload = 0;
-            memoryOverload = 0;
-            diskOverload = 0;
+            mNormal = 0;
+            mOffline = 0;
+            mSysOverload = 0;
+            mCpuOverload = 0;
+            mMemoryOverload = 0;
+            mDiskOverload = 0;
             double systemLoad = Double.parseDouble(sharedPreferences.getString("system_load_threshold", "1.0"));
             double cpuLoad = Double.parseDouble(sharedPreferences.getString("cpu_alert_threshold", "0.75"));
             double memoryLoad = Double.parseDouble(sharedPreferences.getString("memory_alert_threshold", "0.75"));
@@ -174,37 +166,37 @@ public class HomeFragment extends Fragment {
                         boolean isNormal = true;
                         if (statusBean.getServerLoad() != null && statusBean.getServerLoad() > systemLoad) {
                             isNormal = false;
-                            sysOverload++;
+                            mSysOverload++;
                         }
                         if (statusBean.getServerCpuPercent() != null && statusBean.getServerCpuPercent() > cpuLoad) {
                             isNormal = false;
-                            cpuOverload++;
+                            mCpuOverload++;
                         }
                         if (statusBean.getServerMemoryPercent() != null && statusBean.getServerMemoryPercent() > memoryLoad) {
                             isNormal = false;
-                            memoryOverload++;
+                            mMemoryOverload++;
                         }
                         if (statusBean.getServerDiskPercent() != null && statusBean.getServerDiskPercent() > diskLoad) {
                             isNormal = false;
-                            diskOverload++;
+                            mDiskOverload++;
                         }
                         if (isNormal) {
-                            normal++;
+                            mNormal++;
                         }
                     } else {
-                        offline++;
+                        mOffline++;
                     }
                     //设置新的适配器数据
-                    homePageBeans.get(Constants.CardFlag.NORMAL.ordinal()).setSubTitle(normal);
-                    homePageBeans.get(Constants.CardFlag.OFFLINE.ordinal()).setSubTitle(offline);
-                    homePageBeans.get(Constants.CardFlag.OVERLOAD.ordinal()).setSubTitle(sysOverload);
-                    homePageBeans.get(Constants.CardFlag.CPU_OVERLOAD.ordinal()).setSubTitle(cpuOverload);
-                    homePageBeans.get(Constants.CardFlag.MEMORY_OVERLOAD.ordinal()).setSubTitle(memoryOverload);
-                    homePageBeans.get(Constants.CardFlag.DISK_OVERLOAD.ordinal()).setSubTitle(diskOverload);
+                    mHomePageBeans.get(Constants.CardFlag.NORMAL.ordinal()).setSubTitle(mNormal);
+                    mHomePageBeans.get(Constants.CardFlag.OFFLINE.ordinal()).setSubTitle(mOffline);
+                    mHomePageBeans.get(Constants.CardFlag.OVERLOAD.ordinal()).setSubTitle(mSysOverload);
+                    mHomePageBeans.get(Constants.CardFlag.CPU_OVERLOAD.ordinal()).setSubTitle(mCpuOverload);
+                    mHomePageBeans.get(Constants.CardFlag.MEMORY_OVERLOAD.ordinal()).setSubTitle(mMemoryOverload);
+                    mHomePageBeans.get(Constants.CardFlag.DISK_OVERLOAD.ordinal()).setSubTitle(mDiskOverload);
                     //发送消息
                     Message msg = new Message();
-                    msg.what = messageUpdateFlag;
-                    homeFragmentHandler.sendMessage(msg);
+                    msg.what = MESSAGE_UPDATED_FLAG;
+                    mHomeFragmentHandler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -229,8 +221,8 @@ public class HomeFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             //当收到数据更新消息时更新适配器
-            if (msg.what == messageUpdateFlag) {
-                homePageAdapter.notifyDataSetChanged();
+            if (msg.what == MESSAGE_UPDATED_FLAG) {
+                mHomePageAdapter.notifyDataSetChanged();
             }
         }
     }

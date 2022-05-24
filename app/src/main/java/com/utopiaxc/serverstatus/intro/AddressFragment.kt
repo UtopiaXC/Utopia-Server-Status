@@ -1,10 +1,7 @@
 package com.utopiaxc.serverstatus.intro
 
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -36,14 +33,14 @@ import java.util.regex.Pattern
  * @author UtopiaXC
  * @since 2022-05-22 22:35:08
  */
-open class AddressFragment(private var context: IntroActivity) : Fragment(), SlidePolicy,
+open class AddressFragment(private var mContext: IntroActivity) : Fragment(), SlidePolicy,
     SlideBackgroundColorHolder {
-    private var addressIsSet = false
-    private var colorRes = R.color.white
-    private var messager = AddressFragmentHandler(context.mainLooper)
-    private var color = context.getColor(colorRes)
-    private lateinit var binding: FragmentAddressBinding
-    private lateinit var address: String
+    private var mAddressIsSet = false
+    private var mColorRes = R.color.white
+    private var mMessageHandler = AddressFragmentHandler(mContext.mainLooper)
+    private var mColor = mContext.getColor(mColorRes)
+    private lateinit var mBinding: FragmentAddressBinding
+    private lateinit var mAddress: String
 
     /**
      * Fragment创建
@@ -54,7 +51,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FragmentAddressBinding.inflate(layoutInflater)
+        mBinding = FragmentAddressBinding.inflate(layoutInflater)
     }
 
     /**
@@ -72,30 +69,30 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
         savedInstanceState: Bundle?
     ): View {
         //显示提示
-        binding.buttonAddressHelp.setOnClickListener {
-            AlertDialog.Builder(context).setTitle(R.string.tips)
+        mBinding.buttonAddressHelp.setOnClickListener {
+            AlertDialog.Builder(mContext).setTitle(R.string.tips)
                 .setMessage(R.string.address_help)
                 .setPositiveButton(R.string.confirm, null)
                 .create()
                 .show()
         }
         //完成API地址输入
-        binding.buttonSubmitAddress.setOnClickListener {
-            address = binding.editTextAddress.text.toString()
+        mBinding.buttonSubmitAddress.setOnClickListener {
+            mAddress = mBinding.editTextAddress.text.toString()
             //检查地址格式
             val pattern = "^https://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$"
             val r: Pattern = Pattern.compile(pattern)
-            val m: Matcher = r.matcher(address)
+            val m: Matcher = r.matcher(mAddress)
             if (!m.matches()) {
-                AlertDialog.Builder(context).setTitle(R.string.warning)
+                AlertDialog.Builder(mContext).setTitle(R.string.warning)
                     .setMessage(R.string.address_format_wrong)
                     .setPositiveButton(R.string.confirm, null)
                     .create()
                     .show()
                 return@setOnClickListener
             }
-            binding.buttonSubmitAddress.setText(R.string.wait)
-            binding.buttonSubmitAddress.isEnabled = false
+            mBinding.buttonSubmitAddress.setText(R.string.wait)
+            mBinding.buttonSubmitAddress.isEnabled = false
 
             //隐藏软键盘
             val imm: InputMethodManager = requireView().context
@@ -106,14 +103,14 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
             Thread(CheckUrl()).start()
         }
         //当地址发生改变时重置设置状态
-        binding.editTextAddress.addTextChangedListener(object : TextWatcher {
+        mBinding.editTextAddress.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                binding.buttonSubmitAddress.setText(R.string.confirm)
-                binding.buttonSubmitAddress.setBackgroundColor(getColorPrimary())
-                binding.buttonSubmitAddress.isEnabled = true
-                addressIsSet = false
-                address = ""
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                mBinding.buttonSubmitAddress.setText(R.string.confirm)
+                mBinding.buttonSubmitAddress.setBackgroundColor(getColorPrimary())
+                mBinding.buttonSubmitAddress.isEnabled = true
+                mAddressIsSet = false
+                mAddress = ""
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val editor = sharedPreferences.edit()
                 editor.remove("address")
                 editor.remove("first_start")
@@ -123,7 +120,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
         })
-        return binding.root
+        return mBinding.root
     }
 
     /**
@@ -135,7 +132,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
      */
     open fun getColorPrimary(): Int {
         val typedValue = TypedValue()
-        context.theme
+        mContext.theme
             .resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
         return typedValue.data
     }
@@ -156,14 +153,14 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
          */
         override fun run() {
             //构建API地址
-            if (address.last() != '/') {
-                address += '/'
+            if (mAddress.last() != '/') {
+                mAddress += '/'
             }
-            address += "json/stats.json"
+            mAddress += "json/stats.json"
 
             //构建API请求
             val connect: Connection =
-                Jsoup.connect(address).header("Accept", "*/*")
+                Jsoup.connect(mAddress).header("Accept", "*/*")
                     .header("Content-Type", "application/xml;charset=UTF-8")
                     .ignoreContentType(true)
             try {
@@ -174,26 +171,26 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
                     JSONObject.parseObject(document.body().text()).getString("servers")
                 )
                 if (servers.size < 1) {
-                    addressIsSet = false
+                    mAddressIsSet = false
                     val message = Message()
                     message.what = ADDRESS_CHECK_FLAG
-                    messager.sendMessage(message)
+                    mMessageHandler.sendMessage(message)
                     return
                 }
             } catch (e: Exception) {
                 //当请求发生异常发送失败消息
                 e.printStackTrace()
-                addressIsSet = false
+                mAddressIsSet = false
                 val message = Message()
                 message.what = ADDRESS_CHECK_FLAG
-                messager.sendMessage(message)
+                mMessageHandler.sendMessage(message)
                 return
             }
             //发送成功消息
-            addressIsSet = true
+            mAddressIsSet = true
             val message = Message()
             message.what = ADDRESS_CHECK_FLAG
-            messager.sendMessage(message)
+            mMessageHandler.sendMessage(message)
         }
     }
 
@@ -215,21 +212,21 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.what == Companion.ADDRESS_CHECK_FLAG) {
-                if (addressIsSet) {
+                if (mAddressIsSet) {
                     //如果检查成功则通过按钮显示并设置偏好值
-                    binding.buttonSubmitAddress.setText(R.string.succeed)
-                    binding.buttonSubmitAddress.isEnabled = false
-                    binding.buttonSubmitAddress.setBackgroundColor(context.getColor(R.color.succeed))
-                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    mBinding.buttonSubmitAddress.setText(R.string.succeed)
+                    mBinding.buttonSubmitAddress.isEnabled = false
+                    mBinding.buttonSubmitAddress.setBackgroundColor(mContext.getColor(R.color.succeed))
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val editor = sharedPreferences.edit()
-                    editor.putString("address", address)
+                    editor.putString("address", mAddress)
                     editor.putBoolean("first_start", false)
                     editor.apply()
                 } else {
                     //如果地址检查失败则提示
-                    binding.buttonSubmitAddress.setText(R.string.confirm)
-                    binding.buttonSubmitAddress.isEnabled = true
-                    AlertDialog.Builder(context).setTitle(R.string.warning)
+                    mBinding.buttonSubmitAddress.setText(R.string.confirm)
+                    mBinding.buttonSubmitAddress.isEnabled = true
+                    AlertDialog.Builder(mContext).setTitle(R.string.warning)
                         .setMessage(R.string.address_invalid)
                         .setPositiveButton(R.string.confirm, null)
                         .create()
@@ -249,7 +246,7 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
     }
 
     override val isPolicyRespected: Boolean
-        get() = addressIsSet
+        get() = mAddressIsSet
 
     override fun onUserIllegallyRequestedNextPage() {
         AlertDialog.Builder(this.activity).setTitle(R.string.sorry)
@@ -264,11 +261,11 @@ open class AddressFragment(private var context: IntroActivity) : Fragment(), Sli
         replaceWith = ReplaceWith("defaultBackgroundColorRes")
     )
     override val defaultBackgroundColor: Int
-        get() = color
+        get() = mColor
     override val defaultBackgroundColorRes: Int
-        get() = colorRes
+        get() = mColorRes
 
     override fun setBackgroundColor(backgroundColor: Int) {
-        binding.root.setBackgroundColor(backgroundColor)
+        mBinding.root.setBackgroundColor(backgroundColor)
     }
 }
