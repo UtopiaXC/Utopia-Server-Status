@@ -23,6 +23,7 @@
     <string name="background_notification_title">Background Notification</string>
     <string name="server_alert_notification">Server Alert Notification</string>
     <string name="uptime">Uptime</string>
+    <string name="not_agree_privacy_alert">You must choose agree.</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>
@@ -107,4 +108,10 @@
     <string name="download">Upload</string>
     <string name="export_report">Export archive data (csv)</string>
     <string name="export_report_header">Server Name,Server Type,Server Location,Server Region,Server Ipv4 Online,Server Ipv6 Online,Server Uptime,Server Load,Server Realtime Network Download Speed,Server Realtime Network Upload Speed,Server Network In,Server Network Out,Server CPU Load,Server Total Memory,Server Used Memory,Server Used Memory Ratio,Server Total Swap,Server Used Swap,Server Used Swap Ratio,Server Total Disk,Server Used Disk,Server Used Disk Ratio,Server Status Timestamp\n</string>
+
+    <!--    Privacy Policy-->
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_content">This software is open source software. \nThis software does not collect any personal information and does not request any sensitive permissions. \nThis software only saves the required data for local storage, and does not transfer or upload data. \nThe user has the right to delete any data saved locally by this software at any time.</string>
+    <string name="agree">Agree</string>
+
 </resources>

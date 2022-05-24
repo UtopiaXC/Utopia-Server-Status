@@ -34,6 +34,9 @@ class IntroActivity : AppIntro2() {
         )
 
         //添加API地址设置页
+        addSlide(PrivacyPolicyFragment.newInstance(this))
+
+        //添加API地址设置页
         addSlide(AddressFragment.newInstance(this))
     }
 

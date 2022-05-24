@@ -38,6 +38,8 @@ public class ServerCardAdapter extends BaseQuickAdapter<ServerCardBean, BaseView
         baseViewHolder.setText(R.id.serverType, serverCardBean.getServerType());
         if (serverCardBean.getServerUptime() != null) {
             baseViewHolder.setText(R.id.serverUptime, getContext().getString(R.string.uptime) + " " + serverCardBean.getServerUptime());
+        }else{
+            baseViewHolder.setText(R.id.serverUptime,null);
         }
         if (serverCardBean.getServerLoad() != null && serverCardBean.getServerLoad() != null) {
             baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.server_load_title) + serverCardBean.getServerLoad());
