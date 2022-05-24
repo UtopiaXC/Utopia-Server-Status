@@ -64,7 +64,7 @@ public class StatusBean {
      */
     @Nullable
     @ColumnInfo(name = "server_uptime")
-    private Integer serverUptime;
+    private String serverUptime;
 
     /**
      * 服务器负载
@@ -237,11 +237,11 @@ public class StatusBean {
     }
 
     @Nullable
-    public Integer getServerUptime() {
+    public String getServerUptime() {
         return serverUptime;
     }
 
-    public void setServerUptime(@Nullable Integer serverUptime) {
+    public void setServerUptime(@Nullable String serverUptime) {
         this.serverUptime = serverUptime;
     }
 

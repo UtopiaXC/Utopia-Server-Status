@@ -1,21 +1,30 @@
 package com.utopiaxc.serverstatus.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.DocumentsContract;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -36,6 +45,9 @@ import com.utopiaxc.serverstatus.utils.StorageUtil;
 import com.utopiaxc.serverstatus.utils.ThemeUtil;
 import com.utopiaxc.serverstatus.utils.Variables;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,6 +67,7 @@ public class ServerActivity extends AppCompatActivity {
     private ActivityServerBinding binding;
     private UUID serverId;
     private final int SERVER_UPDATED = 32161154;
+    private static final int CREATE_FILE = 124521054;
     private ServerBean serverBean;
     private StatusBean statusBean;
     private List<StatusBean> statusBeans;
@@ -69,6 +82,7 @@ public class ServerActivity extends AppCompatActivity {
      * @author UtopiaXC
      * @since 2022-05-23 23:30:52
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,14 +98,83 @@ public class ServerActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
         context.registerReceiver(serverUpdatedReceiver, intentFilter, "com.utopiaxc.receiver.RECEIVE_INTERNAL_BROADCAST", null);
-        setChartOptions(getString(R.string.cpu_load),  binding.cpuChart);
-        setChartOptions(getString(R.string.memory_load),  binding.memoryChart);
-        setChartOptions(getString(R.string.download),  binding.downChart);
-        setChartOptions(getString(R.string.upload),  binding.upChart);
+        setChartOptions(getString(R.string.cpu_load), binding.cpuChart);
+        setChartOptions(getString(R.string.memory_load), binding.memoryChart);
+        setChartOptions(getString(R.string.download), binding.downChart);
+        setChartOptions(getString(R.string.upload), binding.upChart);
+        //保存按钮。调用系统默认选择器选择保存路径获取Uri
         binding.buttonExportServerData.setOnClickListener(view -> {
-
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("**/csv");
+            intent.putExtra(Intent.EXTRA_TITLE, serverBean.getServerName() + ".csv");
+            fileStorageResult.launch(intent);
         });
     }
+
+    //文件选择回调
+    ActivityResultLauncher<Intent> fileStorageResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        //启动保存线程
+                        Uri fileUri = data.getData();
+                        new Thread(new StatusSaveFile(fileUri)).start();
+                    }
+                }
+            });
+
+    class StatusSaveFile implements Runnable {
+        private final Uri uri;
+
+        public StatusSaveFile(Uri uri) {
+            this.uri = uri;
+        }
+
+        @Override
+        public void run() {
+            //通过Uri打开文件并保存
+            try {
+                OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                List<StatusBean> status = Variables.database.statusDao().getAll();
+                String content = getString(R.string.export_report_header);
+                outputStream.write(content.getBytes());
+                for (StatusBean statusBean : status) {
+                    content = serverBean.getServerName()
+                            + "," + statusBean.getServerType()
+                            + "," + statusBean.getServerLocation()
+                            + "," + statusBean.getServerRegion()
+                            + "," + statusBean.getServerIpv4Status()
+                            + "," + statusBean.getServerIpv6Status()
+                            + "," + statusBean.getServerUptime()
+                            + "," + statusBean.getServerLoad()
+                            + "," + statusBean.getServerNetworkRealtimeDownloadSpeed()
+                            + "," + statusBean.getServerNetworkRealtimeUploadSpeed()
+                            + "," + statusBean.getServerNetworkIn()
+                            + "," + statusBean.getServerNetworkOut()
+                            + "," + statusBean.getServerCpuPercent()
+                            + "," + statusBean.getServerMemoryTotal()
+                            + "," + statusBean.getServerMemoryUsed()
+                            + "," + statusBean.getServerMemoryPercent()
+                            + "," + statusBean.getServerSwapTotal()
+                            + "," + statusBean.getServerSwapUsed()
+                            + "," + statusBean.getServerSwapPercent()
+                            + "," + statusBean.getServerDiskTotal()
+                            + "," + statusBean.getServerDiskUsed()
+                            + "," + statusBean.getServerDiskPercent()
+                            + "," + statusBean.getServerTimestamp() + "\n";
+                    outputStream.write(content.getBytes());
+                }
+                outputStream.flush();
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /**
      * 返回键
@@ -270,10 +353,10 @@ public class ServerActivity extends AppCompatActivity {
                         netDownValues.add(new Entry(flag++, statusBean.getServerNetworkRealtimeDownloadSpeed().floatValue()));
                     }
                 }
-                setChartDataSetOptions(new LineDataSet(cpuValues, null),binding.cpuChart);
-                setChartDataSetOptions(new LineDataSet(memoryValues, null),binding.memoryChart);
-                setChartDataSetOptions(new LineDataSet(netUpValues, null),binding.upChart);
-                setChartDataSetOptions(new LineDataSet(netDownValues, null),binding.downChart);
+                setChartDataSetOptions(new LineDataSet(cpuValues, null), binding.cpuChart);
+                setChartDataSetOptions(new LineDataSet(memoryValues, null), binding.memoryChart);
+                setChartDataSetOptions(new LineDataSet(netUpValues, null), binding.upChart);
+                setChartDataSetOptions(new LineDataSet(netDownValues, null), binding.downChart);
             }
         }
     }
@@ -281,12 +364,12 @@ public class ServerActivity extends AppCompatActivity {
     /**
      * 设置表组件样式
      *
+     * @param title     表标题
+     * @param lineChart 表组件
      * @author UtopiaXC
      * @since 2022-05-24 19:04:07
-     * @param title 表标题
-     * @param lineChart 表组件
      */
-    private void setChartOptions(String title,LineChart lineChart) {
+    private void setChartOptions(String title, LineChart lineChart) {
         lineChart.setData(new LineData(new LineDataSet(new ArrayList<>(), null)));
         lineChart.setTouchEnabled(false);
         lineChart.getDescription().setEnabled(true);
@@ -326,12 +409,12 @@ public class ServerActivity extends AppCompatActivity {
     /**
      * 设置数据样式
      *
+     * @param dataSet   数据集合
+     * @param lineChart 表组件
      * @author UtopiaXC
      * @since 2022-05-24 19:03:34
-     * @param dataSet 数据集合
-     * @param lineChart 表组件
      */
-    private void setChartDataSetOptions(LineDataSet dataSet,LineChart lineChart) {
+    private void setChartDataSetOptions(LineDataSet dataSet, LineChart lineChart) {
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         dataSet.setCubicIntensity(0.2f);
         dataSet.setDrawFilled(true);

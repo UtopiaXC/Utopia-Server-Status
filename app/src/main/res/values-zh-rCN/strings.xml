@@ -104,4 +104,6 @@
     <string name="upload">下载</string>
     <string name="download">上传</string>
     <string name="export_report">导出数据存档（csv）</string>
+    <string name="export_report_header">服务器名,服务器类型,服务器位置,服务器IPv4网络状态,服务器IPv6网络状态,服务器运行时间,服务器负载,服务器实时下载速度,服务器实时上传速度,服务器下载总量,服务器上传总量,服务器CPU负载,服务器总内存量,服务器使用内存量,服务器内存使用比例,服务器交换分区总量,服务器交换分区使用量,服务器交换分区使用量比例,服务器硬盘大小,服务器硬盘已使用量,服务器硬盘使用比例,服务器状态时间戳\n</string>
+
 </resources>

@@ -56,7 +56,6 @@ public class UpdateStatus implements Runnable {
     public void run() {
         //当线程不被打断时一直运行
         while (!Thread.currentThread().isInterrupted()) {
-            Date dateStart = new Date();
             //从偏好中取得更新间隔与接口地址
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             int interval = Integer.parseInt(sharedPreferences.getString("interval", "5000"));
@@ -134,6 +133,7 @@ public class UpdateStatus implements Runnable {
                         statusBeans.add(statusBean);
                         continue;
                     }
+                    statusBean.setServerUptime(jsonObject.getDouble("uptime").toString());
                     double serverLoad = jsonObject.getDouble("load");
                     int serverDownloadSpeed = jsonObject.getInteger("network_rx");
                     int serverUploadSpeed = jsonObject.getInteger("network_tx");
@@ -184,12 +184,8 @@ public class UpdateStatus implements Runnable {
 
                 //完成服务器数据更新后发送广播
                 Intent broadcast = new Intent("com.utopiaxc.serverstatus.SERVER_STATUS_UPDATED");
-                broadcast.putExtra("timestamp",timestamp);
+                broadcast.putExtra("timestamp", timestamp);
                 context.sendBroadcast(broadcast);
-
-
-                Date dateEnd = new Date();
-                Log.d("UPDATE STATUS TIMING","数据获取完成，消耗时间：" + (dateEnd.getTime() - dateStart.getTime()) / 1000.0 + "秒");
                 //休眠间隔
                 Thread.sleep(interval);
             } catch (InterruptedException ie) {

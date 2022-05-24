@@ -105,4 +105,5 @@
     <string name="upload">Download</string>
     <string name="download">Upload</string>
     <string name="export_report">Export archive data (csv)</string>
+    <string name="export_report_header">Server Name,Server Type,Server Location,Server Region,Server Ipv4 Online,Server Ipv6 Online,Server Uptime,Server Load,Server Realtime Network Download Speed,Server Realtime Network Upload Speed,Server Network In,Server Network Out,Server CPU Load,Server Total Memory,Server Used Memory,Server Used Memory Ratio,Server Total Swap,Server Used Swap,Server Used Swap Ratio,Server Total Disk,Server Used Disk,Server Used Disk Ratio,Server Status Timestamp\n</string>
 </resources>

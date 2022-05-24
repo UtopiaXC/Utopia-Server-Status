@@ -51,17 +51,13 @@ public class CircleProgressView extends View {
         circleOutsideColor = 0xffF2F4F5;
         circleProgressColor = 0xff6066DD;
         paint = new Paint();
-        paint.setAntiAlias(true);//抗锯齿
-        paint.setDither(true); //设置防抖动
+        paint.setAntiAlias(true);
+        paint.setDither(true);
     }
 
-    /**
-     * @param progress 已加载进度/总进度
-     * @author ly on 2020/3/3 16:41
-     */
     public void setProgress(float progress) {
         this.progress = progress * COMPLETE;
-        if (this.progress >= COMPLETE) {//表示录制达到最大时长，自动结束
+        if (this.progress >= COMPLETE) {
             this.progress = COMPLETE;
         }
         progressText = (int) (progress * 100) + "%";
@@ -70,7 +66,6 @@ public class CircleProgressView extends View {
 
     public void reset() {
         setProgress(0);
-
     }
 
     @Override
