@@ -152,6 +152,7 @@ public class ServerListFragment extends Fragment {
                 serverCardBean.setServerLoad(statusBean.getServerLoad());
                 serverCardBean.setServerId(statusBean.getServerId());
                 serverCardBean.setServerType(statusBean.getServerType());
+                serverCardBean.setServerUptime(statusBean.getServerUptime());
                 if (statusBean.getServerLoad() != null && statusBean.getServerLoad() >= 1.0) {
                     serverCardBean.setServerLoadProcess(1.0);
                 }

@@ -168,6 +168,7 @@ public class ConditionServerListActivity extends AppCompatActivity {
                     serverCardBean.setServerLoadProcess(1.0);
                 }
                 serverCardBean.setServerLoadProcess(statusBean.getServerLoad());
+                serverCardBean.setServerUptime(statusBean.getServerUptime());
                 serverCardBean.setRegionFlag(Constants.RegionFlagEnum.getByKey(statusBean.getServerRegion()).getSourceId());
                 if (statusBean.getServerIpv4Status() || statusBean.getServerIpv6Status()) {
                     boolean isNormal = true;

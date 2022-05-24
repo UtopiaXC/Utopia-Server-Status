@@ -15,13 +15,16 @@ public class ServerCardBean {
     String serverType;
     Double serverLoad;
     Double serverLoadProcess;
+    String serverUptime;
 
-    public ServerCardBean(UUID serverId, Integer regionFlag, String serverName, String serverType, Double serverLoad, Double serverLoadProcess) {
+    public ServerCardBean(UUID serverId, Integer regionFlag, String serverName, String serverType, Double serverLoad, Double serverLoadProcess,String serverUptime) {
         this.serverId = serverId;
         this.regionFlag = regionFlag;
         this.serverName = serverName;
         this.serverType = serverType;
         this.serverLoad = serverLoad;
+        this.serverUptime=serverUptime;
+
         this.serverLoadProcess = serverLoadProcess;
     }
 
@@ -74,5 +77,13 @@ public class ServerCardBean {
 
     public void setServerLoadProcess(Double serverLoadProcess) {
         this.serverLoadProcess = serverLoadProcess;
+    }
+
+    public String getServerUptime() {
+        return serverUptime;
+    }
+
+    public void setServerUptime(String serverUptime) {
+        this.serverUptime = serverUptime;
     }
 }

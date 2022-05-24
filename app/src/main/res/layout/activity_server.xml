@@ -84,6 +84,15 @@
                     android:layout_marginTop="100dp"
                     android:textSize="11sp" />
 
+                <TextView
+                    android:id="@+id/serverInfoUptime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="100dp"
+                    android:layout_gravity="end"
+                    android:textSize="11sp" />
+
                 <ProgressBar
                     android:id="@+id/serverInfoProgressCpuLoad"
                     style="?android:attr/progressBarStyleHorizontal"

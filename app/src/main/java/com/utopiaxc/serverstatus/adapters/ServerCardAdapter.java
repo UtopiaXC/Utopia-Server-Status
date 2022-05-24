@@ -36,6 +36,9 @@ public class ServerCardAdapter extends BaseQuickAdapter<ServerCardBean, BaseView
         baseViewHolder.setImageResource(R.id.regionFlag, serverCardBean.getRegionFlag());
         baseViewHolder.setText(R.id.serverName, serverCardBean.getServerName());
         baseViewHolder.setText(R.id.serverType, serverCardBean.getServerType());
+        if (serverCardBean.getServerUptime() != null) {
+            baseViewHolder.setText(R.id.serverUptime, getContext().getString(R.string.uptime) + " " + serverCardBean.getServerUptime());
+        }
         if (serverCardBean.getServerLoad() != null && serverCardBean.getServerLoad() != null) {
             baseViewHolder.setText(R.id.serverLoad, getContext().getString(R.string.server_load_title) + serverCardBean.getServerLoad());
             ProgressBar progressBar = baseViewHolder.getView(R.id.progressLoad);

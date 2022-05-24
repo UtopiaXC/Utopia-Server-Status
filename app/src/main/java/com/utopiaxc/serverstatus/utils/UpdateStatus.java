@@ -133,7 +133,7 @@ public class UpdateStatus implements Runnable {
                         statusBeans.add(statusBean);
                         continue;
                     }
-                    statusBean.setServerUptime(jsonObject.getDouble("uptime").toString());
+                    statusBean.setServerUptime(jsonObject.getString("uptime"));
                     double serverLoad = jsonObject.getDouble("load");
                     int serverDownloadSpeed = jsonObject.getInteger("network_rx");
                     int serverUploadSpeed = jsonObject.getInteger("network_tx");

@@ -21,6 +21,7 @@
     <string name="no_server_to_show">暂无服务器可显示</string>
     <string name="background_notification_title">后台服务通知</string>
     <string name="server_alert_notification">服务器异常通知</string>
+    <string name="uptime">运行时间</string>
 
     <!--    通用标题-->
     <string name="confirm">确认</string>

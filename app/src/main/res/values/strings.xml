@@ -22,6 +22,7 @@
     <string name="no_server_to_show">No server to show</string>
     <string name="background_notification_title">Background Notification</string>
     <string name="server_alert_notification">Server Alert Notification</string>
+    <string name="uptime">Uptime</string>
 
     <!--    titles-->
     <string name="confirm">Confirm</string>

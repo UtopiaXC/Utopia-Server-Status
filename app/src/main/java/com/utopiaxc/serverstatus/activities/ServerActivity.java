@@ -72,7 +72,6 @@ public class ServerActivity extends AppCompatActivity {
     private StatusBean statusBean;
     private List<StatusBean> statusBeans;
     private ServerUpdatedReceiver serverUpdatedReceiver;
-    private Context context;
     private ServerInfoMessageHandler serverInfoMessageHandler;
 
     /**
@@ -88,7 +87,7 @@ public class ServerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityServerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        context = this;
+        Context context = this;
         serverInfoMessageHandler = new ServerInfoMessageHandler(getMainLooper());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         serverId = (UUID) getIntent().getExtras().get("serverId");
@@ -322,11 +321,15 @@ public class ServerActivity extends AppCompatActivity {
                                         + getString(R.string.total)
                         );
                     }
+                    if (statusBean.getServerUptime()!=null){
+                        binding.serverInfoUptime.setText(getString(R.string.uptime) + " " + statusBean.getServerUptime());
+                    }
                 } else {
                     binding.serverInfoServerLoad.setText(getString(R.string.server_activity_load_title) + getString(R.string.server_offline));
                     binding.serverInfoCpuLoad.setText(getString(R.string.server_activity_cpu_load_title) + getString(R.string.server_offline));
                     binding.serverInfoMemoryLoad.setText(getString(R.string.server_activity_memory_load_title) + getString(R.string.server_offline));
                     binding.serverInfoDiskLoad.setText(getString(R.string.server_activity_disk_load_title) + getString(R.string.server_offline));
+                    binding.serverInfoUptime.setText(getString(R.string.uptime) + " " + getString(R.string.server_offline));
                     binding.serverDetailInfo.setVisibility(View.GONE);
                 }
 
