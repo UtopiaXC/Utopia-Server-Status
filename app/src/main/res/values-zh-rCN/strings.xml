@@ -85,6 +85,12 @@
     <string name="home_memory_overload">内存过载</string>
     <string name="home_disk_overload">硬盘容量耗尽</string>
 
-    <!--    服务器别聊-->
+    <!--    服务器列表-->
     <string name="server_load_title">负载：</string>
+
+    <!--    服务器详情-->
+    <string name="server_activity_load_title">负载：</string>
+    <string name="server_activity_cpu_load_title">CPU使用率：</string>
+    <string name="server_activity_memory_load_title">内存使用率：</string>
+    <string name="server_activity_disk_load_title">硬盘容量使用率：</string>
 </resources>

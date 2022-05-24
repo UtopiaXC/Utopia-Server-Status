@@ -10,6 +10,7 @@ import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 服务器状态数据库连接
@@ -79,4 +80,24 @@ public interface StatusDao {
      */
     @Query("SELECT * FROM status WHERE server_timestamp = (SELECT MAX(server_timestamp) FROM status) AND server_id IN (SELECT id FROM servers)")
     List<StatusBean> getNewestStatus();
+
+    /**
+     * 获取指定服务器最新的服务器状态
+     *
+     * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
+     * @author UtopiaXC
+     * @since 2022-05-23 15:20:43
+     */
+    @Query("SELECT * FROM status WHERE server_timestamp = (SELECT MAX(server_timestamp) FROM status) AND server_id =:serverId LIMIT 1")
+    StatusBean getNewestStatusByServerId(UUID serverId);
+
+    /**
+     * 获取指定服务器最近的服务器状态
+     *
+     * @return java.util.List<com.utopiaxc.serverstatus.database.model.StatusBean>
+     * @author UtopiaXC
+     * @since 2022-05-23 15:20:43
+     */
+    @Query("SELECT * FROM status WHERE server_timestamp = server_id =:serverId ORDER BY server_timestamp DESC LIMIT 1000")
+    List<StatusBean> getDataForChartByServerId(UUID serverId);
 }

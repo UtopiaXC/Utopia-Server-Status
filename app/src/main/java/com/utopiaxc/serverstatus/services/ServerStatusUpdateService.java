@@ -17,24 +17,16 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.mikepenz.community_material_typeface_library.CommunityMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.utopiaxc.serverstatus.Beans.ServerCardBean;
 import com.utopiaxc.serverstatus.MainActivity;
 import com.utopiaxc.serverstatus.R;
-import com.utopiaxc.serverstatus.activities.ConditionServerListActivity;
-import com.utopiaxc.serverstatus.adapters.ServerCardAdapter;
 import com.utopiaxc.serverstatus.database.model.NotificationBean;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 import com.utopiaxc.serverstatus.database.model.StatusBean;
-import com.utopiaxc.serverstatus.databinding.FragmentServerListBinding;
-import com.utopiaxc.serverstatus.fragments.ServerListFragment;
 import com.utopiaxc.serverstatus.utils.Constants;
 import com.utopiaxc.serverstatus.utils.UpdateStatus;
 import com.utopiaxc.serverstatus.utils.Variables;
@@ -66,7 +58,6 @@ public class ServerStatusUpdateService extends Service {
     protected ServerListFragmentHandler serverListFragmentHandler;
     private final List<NotificationBean> notificationBeans = new ArrayList<>();
     private SharedPreferences sharedPreferences;
-    private ServerStatusUpdateService serverStatusUpdateService;
 
     /**
      * 服务入口
@@ -82,7 +73,6 @@ public class ServerStatusUpdateService extends Service {
         binder = new ServerStatusUpdateBinder();
         mContext = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        serverStatusUpdateService = this;
         serverListFragmentHandler = new ServerListFragmentHandler(mContext.getMainLooper());
 
         //后台常驻通知
@@ -268,7 +258,7 @@ public class ServerStatusUpdateService extends Service {
             int alertInterval = Integer.parseInt(sharedPreferences.getString("same_overload_alert_interval", "5"));
             int timestampNow = (int) (new Date().getTime() / 1000);
             int triggerTimestamp = timestampNow - (alertInterval * 60);
-            if (!enableAlert) {
+            if (!enableAlert || !backgroundService) {
                 return;
             }
             for (StatusBean statusBean : statusBeans) {
@@ -400,7 +390,7 @@ public class ServerStatusUpdateService extends Service {
                         title = getString(R.string.home_disk_overload);
                         description += getString(R.string.home_disk_overload);
                     }
-                    notificationManager.notify(notificationBean.getNotificationId(),getServerAlertNotification(icon, title, description));
+                    notificationManager.notify(notificationBean.getNotificationId(), getServerAlertNotification(icon, title, description));
                 }
             }
         }

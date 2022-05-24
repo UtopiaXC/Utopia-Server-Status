@@ -88,4 +88,10 @@
 
     <!--    Server List-->
     <string name="server_load_title">Server Load:</string>
+
+    <!--    Server Activity-->
+    <string name="server_activity_load_title">Server Load:</string>
+    <string name="server_activity_cpu_load_title">CPU Load:</string>
+    <string name="server_activity_memory_load_title">Memory Load:</string>
+    <string name="server_activity_disk_load_title">Disk Load:</string>
 </resources>

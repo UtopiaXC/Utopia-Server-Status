@@ -10,6 +10,7 @@ import androidx.room.Query;
 import com.utopiaxc.serverstatus.database.model.ServerBean;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 服务器数据库连接
@@ -50,7 +51,7 @@ public interface ServerDao {
      * @since 2022-05-22 23:07:20
      */
     @Query("SELECT id,server_name FROM servers WHERE id=:id")
-    ServerBean getById(String id);
+    ServerBean getById(UUID id);
 
     /**
      * 插入服务器列表

@@ -6,10 +6,6 @@
     android:layout_height="wrap_content"
     android:padding="0dp">
 
-    <!-- android:clickable="true"  //cardView是否可点击,默认是不可点击的 -->
-    <!-- app:cardCornerRadius="3dp" //圆角 -->
-    <!-- app:cardElevation="8dp" //阴影 -->
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardServer"
         android:layout_width="match_parent"
