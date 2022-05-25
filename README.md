@@ -2,7 +2,7 @@
 <p align="center"><img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="logo"/></p>
 <br>
 <p align="center">
-<a target="_blank" href="https://github.com/UtopiaXC/My-Music-Player/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL3.0-green" alt="license-mit"/></a>
+<a target="_blank" href="https://github.com/UtopiaXC/Utopia-Server-Status/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL3.0-green" alt="license-mit"/></a>
 <a target="_blank" href="https://www.android.com/"><img src="https://img.shields.io/badge/Android%20Min%20Target-API23-%23ff5252" alt="Laravel"/></a>
 <a target="_blank" href="https://www.utopiaxc.cn/"><img src="https://img.shields.io/badge/Author-UtopiaXC-%23ae52d4" alt="Author"/></a>
 <a target="_blank" href="https://github.com/UtopiaXC/Utopia-Server-Status"><img src="https://img.shields.io/badge/GitHub-Utopia%20Server%20Status-%236d6d6d" alt="GitHub"/></a>
