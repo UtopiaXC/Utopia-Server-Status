@@ -21,6 +21,7 @@ import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import com.utopiaxc.serverstatus.R
 import com.utopiaxc.serverstatus.databinding.FragmentAddressBinding
+import com.utopiaxc.serverstatus.utils.ThemeUtil
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.util.regex.Matcher
@@ -36,9 +37,11 @@ import java.util.regex.Pattern
 open class AddressFragment(private var mContext: IntroActivity) : Fragment(), SlidePolicy,
     SlideBackgroundColorHolder {
     private var mAddressIsSet = false
-    private var mColorRes = R.color.white
+    private var mColorDayRes = R.color.white
     private var mMessageHandler = AddressFragmentHandler(mContext.mainLooper)
-    private var mColor = mContext.getColor(mColorRes)
+    private var mColorDay = mContext.getColor(mColorDayRes)
+    private var mColorNightRes = R.color.night_background
+    private var mColorNight = mContext.getColor(mColorNightRes)
     private lateinit var mBinding: FragmentAddressBinding
     private lateinit var mAddress: String
 
@@ -261,9 +264,22 @@ open class AddressFragment(private var mContext: IntroActivity) : Fragment(), Sl
         replaceWith = ReplaceWith("defaultBackgroundColorRes")
     )
     override val defaultBackgroundColor: Int
-        get() = mColor
+        get() {
+            return if (ThemeUtil.isNightMode(mContext)) {
+                mColorNight
+            } else {
+                mColorDay
+            }
+        }
+
     override val defaultBackgroundColorRes: Int
-        get() = mColorRes
+        get() {
+            return if (ThemeUtil.isNightMode(mContext)) {
+                mColorNightRes
+            } else {
+                mColorDayRes
+            }
+        }
 
     override fun setBackgroundColor(backgroundColor: Int) {
         mBinding.root.setBackgroundColor(backgroundColor)

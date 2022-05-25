@@ -10,14 +10,17 @@ import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import com.utopiaxc.serverstatus.R
 import com.utopiaxc.serverstatus.databinding.FragmentPrivacyPolicyBinding
+import com.utopiaxc.serverstatus.utils.ThemeUtil
 
 
-class PrivacyPolicyFragment(private var context: IntroActivity) : Fragment(), SlidePolicy,
+class PrivacyPolicyFragment(private var mContext: IntroActivity) : Fragment(), SlidePolicy,
     SlideBackgroundColorHolder {
-    private var mColorRes = R.color.white
-    private var mColor = context.getColor(mColorRes)
     private lateinit var mBinding: FragmentPrivacyPolicyBinding
     private var mAgree = false
+    private var mColorDayRes = R.color.white
+    private var mColorDay = mContext.getColor(mColorDayRes)
+    private var mColorNightRes = R.color.night_background
+    private var mColorNight = mContext.getColor(mColorNightRes)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +49,22 @@ class PrivacyPolicyFragment(private var context: IntroActivity) : Fragment(), Sl
         replaceWith = ReplaceWith("defaultBackgroundColorRes")
     )
     override val defaultBackgroundColor: Int
-        get() = mColor
+        get() {
+            return if (ThemeUtil.isNightMode(mContext)) {
+                mColorNight
+            } else {
+                mColorDay
+            }
+        }
+
     override val defaultBackgroundColorRes: Int
-        get() = mColorRes
+        get() {
+            return if (ThemeUtil.isNightMode(mContext)) {
+                mColorNightRes
+            } else {
+                mColorDayRes
+            }
+        }
 
     override fun setBackgroundColor(backgroundColor: Int) {
         mBinding.root.setBackgroundColor(backgroundColor)

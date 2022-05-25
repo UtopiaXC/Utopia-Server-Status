@@ -11,4 +11,5 @@
     <color name="succeed">#66bb6a</color>
     <color name="chart_night">#5c007a</color>
     <color name="chart_day">#c158dc</color>
+    <color name="night_background">#575757</color>
 </resources>

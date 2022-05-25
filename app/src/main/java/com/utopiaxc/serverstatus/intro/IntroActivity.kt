@@ -22,7 +22,7 @@ class IntroActivity : AppIntro2() {
         isWizardMode = true
         isColorTransitionsEnabled = true
         supportActionBar?.hide()
-        isIndicatorEnabled
+
 
         //添加首页
         addSlide(
